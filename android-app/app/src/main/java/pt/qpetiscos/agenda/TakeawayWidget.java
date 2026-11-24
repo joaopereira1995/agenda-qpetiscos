@@ -1,0 +1,1 @@
+package pt.qpetiscos.agenda; public class TakeawayWidget extends WidgetAgenda {}
