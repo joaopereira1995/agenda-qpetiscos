@@ -66,19 +66,19 @@ jobs:
             --ks-key-alias "$KEY_ALIAS" \
             --ks-pass env:STORE_PASSWORD \
             --key-pass env:KEY_PASSWORD \
-            --out Agenda-QPetiscos-v0.4.0.apk \
+            --out Agenda-QPetiscos-v0.4.1.apk \
             "$RUNNER_TEMP/app-aligned.apk"
 
       - name: Validar assinatura
         run: |
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" \
             verify --verbose --print-certs \
-            Agenda-QPetiscos-v0.4.0.apk
+            Agenda-QPetiscos-v0.4.1.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Agenda-QPetiscos-v0.4.0
-          path: Agenda-QPetiscos-v0.4.0.apk
+          name: Agenda-QPetiscos-v0.4.1
+          path: Agenda-QPetiscos-v0.4.1.apk
           if-no-files-found: error
 
       - name: Limpar chave de assinatura
