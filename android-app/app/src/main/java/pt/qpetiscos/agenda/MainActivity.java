@@ -12,7 +12,7 @@ public class MainActivity extends Activity {
  private final Runnable sync=new Runnable(){public void run(){syncWidgetSession();handler.postDelayed(this,15000);}};
  void syncWidgetSession(){if(web==null||web.getUrl()==null||!web.getUrl().startsWith(SITE))return;
  web.evaluateJavascript("(()=>{let v=document.getElementById('appVersion');if(v)v.textContent='v"+BuildConfig.VERSION_NAME+"';try{let s=JSON.parse(localStorage.getItem('sb-kyzwmaydwokbfmiskhcg-auth-token')||'null');return s&&s.user?JSON.stringify({token:s.access_token,uid:s.user.id,device:localStorage.getItem('qp-device-'+s.user.id),revision:window.qpWidgetRevision||0,widgetSave:window.qpWidgetSave||\"\"}):''}catch(e){return ''}})()", result->{try{Object decoded=new JSONTokener(result).nextValue();String value=decoded instanceof String?(String)decoded:"";if(!value.isEmpty()){String saved=new JSONObject(value).optString("widgetSave","");if(!saved.isEmpty()&&!saved.equals(lastWidgetSave)){lastWidgetSave=saved;WidgetAgenda.resetToday(this,getIntent().getIntExtra("qp_wid",-1));}}android.content.SharedPreferences p=getSharedPreferences("widget_session",0);if(!value.equals(p.getString("session",""))){p.edit().putString("session",value).apply();WidgetAgenda.refreshAll(this);}}catch(Exception ignored){}});}
- @Override protected void onPause(){syncWidgetSession();super.onPause();}
+ @Override protected void onPause(){if(web!=null)web.evaluateJavascript("if(window.qpClosePopups)window.qpClosePopups()",null);syncWidgetSession();super.onPause();}
  @Override protected void onResume(){super.onResume();if(web!=null)syncWidgetSession();}
  @Override protected void onDestroy(){handler.removeCallbacks(sync);super.onDestroy();}
  private boolean checking, downloading;
@@ -50,5 +50,5 @@ public class MainActivity extends Activity {
  }catch(Exception e){Toast.makeText(this,"Não foi possível iniciar a instalação.",Toast.LENGTH_LONG).show();}}
  @Override protected void onActivityResult(int request,int result,Intent data){super.onActivityResult(request,result,data);if(request==42&&getPackageManager().canRequestPackageInstalls())installUpdate();}
  static boolean newer(String a,String b){String[] x=a.replaceFirst("^v","").split("\\."),y=b.split("\\.");for(int i=0;i<Math.max(x.length,y.length);i++){int n=i<x.length?Integer.parseInt(x[i]):0,m=i<y.length?Integer.parseInt(y[i]):0;if(n!=m)return n>m;}return false;}
- @Override public void onBackPressed(){if(web.canGoBack())web.goBack();else super.onBackPressed();}
+ @Override public void onBackPressed(){if(web==null){super.onBackPressed();return;}web.evaluateJavascript("window.qpBack?window.qpBack():false",r->{if(!"true".equals(r))goBackNormally();});} private void goBackNormally(){if(web.canGoBack())web.goBack();else super.onBackPressed();}
 }
