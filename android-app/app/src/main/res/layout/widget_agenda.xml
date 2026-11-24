@@ -24,6 +24,7 @@
     <TextView android:id="@+id/filter1" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:gravity="center" android:textSize="12sp" android:layout_margin="2dp" />
     <TextView android:id="@+id/filter2" android:layout_width="0dp" android:layout_height="36dp" android:layout_weight="1" android:gravity="center" android:textSize="12sp" android:layout_margin="2dp" />
   </LinearLayout>
+  <TextView android:id="@+id/widget_people" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:textSize="12sp" android:textStyle="bold" android:paddingBottom="4dp" />
   <TextView android:id="@+id/widget_status" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="11sp" />
   <TextView android:id="@+id/widget_empty" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:gravity="center" android:text="Sem eventos neste dia" android:textSize="12sp" />
   <ListView android:id="@+id/widget_rows" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:dividerHeight="4dp" android:divider="@android:color/transparent" />
