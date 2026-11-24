@@ -5,7 +5,7 @@ public class MainActivity extends Activity {
  String lastWidgetSave=""; WebView web; FrameLayout root; ImageView splash;
  @Override public void onCreate(Bundle b){super.onCreate(b);root=new FrameLayout(this);web=new WebView(this);root.addView(web,new FrameLayout.LayoutParams(-1,-1));splash=new ImageView(this);splash.setBackgroundColor(-1);splash.setImageResource(R.drawable.splash_logo);splash.setScaleType(ImageView.ScaleType.CENTER_INSIDE);root.addView(splash,new FrameLayout.LayoutParams(-1,-1));setContentView(root);
  web.getSettings().setJavaScriptEnabled(true);web.getSettings().setDomStorageEnabled(true);web.getSettings().setAllowFileAccess(false);web.getSettings().setAllowContentAccess(false);web.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);android.webkit.CookieManager.getInstance().setAcceptCookie(true);
- web.setWebViewClient(new WebViewClient(){@Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest r){Uri u=r.getUrl();if("https".equals(u.getScheme())&&"joaopereira1995.github.io".equals(u.getHost())&&u.getPath()!=null&&u.getPath().startsWith("/agenda-qpetiscos/"))return false;if("https".equals(u.getScheme()))startActivity(new Intent(Intent.ACTION_VIEW,u));return true;}@Override public void onPageFinished(WebView v,String u){splash.setVisibility(View.GONE);syncWidgetSession();} });web.loadUrl(widgetUrl(getIntent()));new Handler(Looper.getMainLooper()).postDelayed(()->splash.setVisibility(View.GONE),6000);checkUpdate(); WidgetAgenda.schedule(this); handler.post(sync); }
+ web.addJavascriptInterface(new Object(){@JavascriptInterface public void checkUpdates(){runOnUiThread(()->{if(web.getUrl()!=null&&web.getUrl().startsWith(SITE))checkUpdate(true);});}},"QPetiscosNative");web.setWebViewClient(new WebViewClient(){@Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest r){Uri u=r.getUrl();if("https".equals(u.getScheme())&&"joaopereira1995.github.io".equals(u.getHost())&&u.getPath()!=null&&u.getPath().startsWith("/agenda-qpetiscos/"))return false;if("https".equals(u.getScheme()))startActivity(new Intent(Intent.ACTION_VIEW,u));return true;}@Override public void onPageFinished(WebView v,String u){splash.setVisibility(View.GONE);syncWidgetSession();} });web.loadUrl(widgetUrl(getIntent()));new Handler(Looper.getMainLooper()).postDelayed(()->splash.setVisibility(View.GONE),6000);checkUpdate(); WidgetAgenda.schedule(this); handler.post(sync); }
  String widgetUrl(Intent i){String q=i.getStringExtra("qp_query");return q==null?SITE:SITE+"?"+q;}
  @Override protected void onNewIntent(Intent i){super.onNewIntent(i);setIntent(i);web.loadUrl(widgetUrl(i));}
  private final Handler handler=new Handler(Looper.getMainLooper());
@@ -16,20 +16,21 @@ public class MainActivity extends Activity {
  @Override protected void onResume(){super.onResume();if(web!=null)syncWidgetSession();}
  @Override protected void onDestroy(){handler.removeCallbacks(sync);super.onDestroy();}
  private boolean checking, downloading;
- void checkUpdate(){
+ void checkUpdate(){checkUpdate(false);}
+ void checkUpdate(boolean manual){
  if(checking || downloading)return; checking=true;
  new Thread(()->{try{
  HttpURLConnection c=(HttpURLConnection)new URL("https://api.github.com/repos/joaopereira1995/agenda-qpetiscos/releases/latest").openConnection();
  c.setConnectTimeout(8000);c.setReadTimeout(8000);c.setRequestProperty("Accept","application/vnd.github+json");
- JSONObject j;try{if(c.getResponseCode()!=200)return;ByteArrayOutputStream out=new ByteArrayOutputStream();try(InputStream in=c.getInputStream()){byte[] buf=new byte[4096];int n;while((n=in.read(buf))!=-1)out.write(buf,0,n);}j=new JSONObject(out.toString("UTF-8"));}finally{c.disconnect();}
- String tag=j.getString("tag_name");if(!newer(tag,BuildConfig.VERSION_NAME))return;
+ JSONObject j;try{if(c.getResponseCode()!=200)throw new IOException("HTTP "+c.getResponseCode());ByteArrayOutputStream out=new ByteArrayOutputStream();try(InputStream in=c.getInputStream()){byte[] buf=new byte[4096];int n;while((n=in.read(buf))!=-1)out.write(buf,0,n);}j=new JSONObject(out.toString("UTF-8"));}finally{c.disconnect();}
+ String tag=j.getString("tag_name");if(!newer(tag,BuildConfig.VERSION_NAME)){if(manual)runOnUiThread(()->Toast.makeText(this,"Aplicação atualizada",Toast.LENGTH_SHORT).show());return;}
  JSONArray assets=j.getJSONArray("assets");for(int i=0;i<assets.length();i++){
  JSONObject x=assets.getJSONObject(i);if(!x.getString("name").endsWith(".apk"))continue;
  String url=x.getString("browser_download_url");if(!url.startsWith("https://github.com/joaopereira1995/agenda-qpetiscos/releases/download/"))continue;
  String notes=j.optString("body", "");
  runOnUiThread(()->{if(!isFinishing()&&!isDestroyed())new AlertDialog.Builder(this).setTitle("Atualização disponível").setMessage("Versão instalada: "+BuildConfig.VERSION_NAME+"\nNova versão: "+tag+"\n\n"+notes).setNegativeButton("Mais tarde",null).setPositiveButton("Atualizar",(d,w)->downloadUpdate(url)).show();});break;
  }
- }catch(Exception e){android.util.Log.w("QPetiscos","Verificação de atualização",e);}finally{runOnUiThread(()->checking=false);}}).start();}
+ }catch(Exception e){android.util.Log.w("QPetiscos","Verificação de atualização",e);if(manual)runOnUiThread(()->Toast.makeText(this,"Não foi possível verificar atualizações",Toast.LENGTH_LONG).show());}finally{runOnUiThread(()->checking=false);}}).start();}
  private void downloadUpdate(String url){
  if(downloading)return;downloading=true;
  ProgressDialog progress=new ProgressDialog(this);progress.setMessage("A descarregar atualização…");progress.setCancelable(false);progress.show();
