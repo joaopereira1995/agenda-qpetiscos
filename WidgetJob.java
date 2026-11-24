@@ -1,1 +1,0 @@
-package pt.qpetiscos.agenda; import android.app.job.*; public class WidgetJob extends JobService {public boolean onStartJob(JobParameters p){WidgetAgenda.runAsync(()->{WidgetAgenda.updateAll(this);jobFinished(p,false);});return true;}public boolean onStopJob(JobParameters p){return true;}}
