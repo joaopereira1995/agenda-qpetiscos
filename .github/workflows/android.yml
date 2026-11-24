@@ -1,4 +1,3 @@
-
 name: Compilar Android
 
 on:
@@ -22,19 +21,12 @@ jobs:
       - name: Configurar Android SDK
         shell: bash
         run: |
-          echo "Android SDK: $ANDROID_HOME"
-
           SDKMANAGER=$(find "$ANDROID_HOME/cmdline-tools" \
             -type f -name sdkmanager | sort -V | tail -n 1)
 
           if [ -z "$SDKMANAGER" ]; then
-            echo "Erro: sdkmanager nao encontrado."
             exit 1
           fi
-
-          echo "SDK Manager: $SDKMANAGER"
-
-          "$SDKMANAGER" --version
 
           yes | "$SDKMANAGER" --licenses > /dev/null || true
 
@@ -47,12 +39,48 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Compilar APK de teste
+      - name: Compilar APK Release
         working-directory: android-app
-        run: gradle assembleDebug --no-daemon --stacktrace
+        run: gradle assembleRelease --no-daemon --stacktrace
+
+      - name: Restaurar chave de assinatura
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/agenda-qpetiscos.jks"
+
+      - name: Assinar APK
+        env:
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          TOOLS="$ANDROID_HOME/build-tools/35.0.0"
+
+          "$TOOLS/zipalign" -f -p 4 \
+            android-app/app/build/outputs/apk/release/app-release-unsigned.apk \
+            "$RUNNER_TEMP/app-aligned.apk"
+
+          "$TOOLS/apksigner" sign \
+            --ks "$RUNNER_TEMP/agenda-qpetiscos.jks" \
+            --ks-key-alias "$KEY_ALIAS" \
+            --ks-pass env:STORE_PASSWORD \
+            --key-pass env:KEY_PASSWORD \
+            --out Agenda-QPetiscos-v0.3.1.apk \
+            "$RUNNER_TEMP/app-aligned.apk"
+
+      - name: Validar assinatura
+        run: |
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" \
+            verify --verbose --print-certs \
+            Agenda-QPetiscos-v0.3.1.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Agenda-QPetiscos-v0.3.0-teste
-          path: android-app/app/build/outputs/apk/debug/app-debug.apk
+          name: Agenda-QPetiscos-v0.3.1
+          path: Agenda-QPetiscos-v0.3.1.apk
           if-no-files-found: error
+
+      - name: Limpar chave de assinatura
+        if: always()
+        run: rm -f "$RUNNER_TEMP/agenda-qpetiscos.jks"
