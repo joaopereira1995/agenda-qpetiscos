@@ -49,6 +49,14 @@ jobs:
         run: |
           printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/agenda-qpetiscos.jks"
 
+      - name: Obter versão do APK
+        shell: bash
+        run: |
+          APK=android-app/app/build/outputs/apk/release/app-release-unsigned.apk
+          VERSION=$("$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | sed -n "s/.*versionName='\([^']*\)'.*/\1/p" | head -n 1)
+          test -n "$VERSION"
+          echo "APK_VERSION=$VERSION" >> "$GITHUB_ENV"
+
       - name: Assinar APK
         env:
           STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -66,19 +74,19 @@ jobs:
             --ks-key-alias "$KEY_ALIAS" \
             --ks-pass env:STORE_PASSWORD \
             --key-pass env:KEY_PASSWORD \
-            --out Agenda-QPetiscos-v0.4.1.apk \
+            --out Agenda-QPetiscos-v${{ env.APK_VERSION }}.apk \
             "$RUNNER_TEMP/app-aligned.apk"
 
       - name: Validar assinatura
         run: |
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" \
             verify --verbose --print-certs \
-            Agenda-QPetiscos-v0.4.1.apk
+            Agenda-QPetiscos-v${{ env.APK_VERSION }}.apk
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Agenda-QPetiscos-v0.4.1
-          path: Agenda-QPetiscos-v0.4.1.apk
+          name: Agenda-QPetiscos-v${{ env.APK_VERSION }}
+          path: Agenda-QPetiscos-v${{ env.APK_VERSION }}.apk
           if-no-files-found: error
 
       - name: Limpar chave de assinatura
