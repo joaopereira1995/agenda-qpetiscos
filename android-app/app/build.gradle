@@ -11,8 +11,8 @@ android {
         applicationId 'pt.qpetiscos.agenda'
         minSdk 26
         targetSdk 35
-        versionCode 610
-        versionName '0.6.10'
+        versionCode 700
+        versionName '0.7.0'
     }
 
     buildTypes {
