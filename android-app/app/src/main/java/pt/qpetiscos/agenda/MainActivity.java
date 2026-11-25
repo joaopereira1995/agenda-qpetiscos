@@ -19,9 +19,9 @@ public class MainActivity extends Activity {
   Uri u=r.getUrl();if(!"https".equals(u.getScheme())||!"joaopereira1995.github.io".equals(u.getHost()))return null;
   String path=u.getPath(),prefix="/agenda-qpetiscos/";if(path==null||!path.startsWith(prefix))return null;
   String local=path.substring(prefix.length());if(local.isEmpty())local="index.html";
-  if(!local.equals("index.html")&&!local.matches("assets/[A-Za-z0-9._-]+"))return null;
-  String mime=local.endsWith(".html")?"text/html":local.endsWith(".png")?"image/png":"application/octet-stream";
-  try{return new WebResourceResponse(mime,local.endsWith(".html")?"UTF-8":null,getAssets().open("qp-web/"+local));}
+  if(!local.equals("index.html")&&!local.equals("assets/vendor/plotly.min.js")&&!local.matches("assets/[A-Za-z0-9._-]+"))return null;
+  String mime=local.endsWith(".html")?"text/html":local.endsWith(".png")?"image/png":local.endsWith(".js")?"application/javascript":"application/octet-stream";
+  try{return new WebResourceResponse(mime,(local.endsWith(".html")||local.endsWith(".js"))?"UTF-8":null,getAssets().open("qp-web/"+local));}
   catch(IOException e){return new WebResourceResponse("text/plain","UTF-8",503,"Bundle unavailable",java.util.Collections.emptyMap(),new ByteArrayInputStream("Interface indisponível. Reinstala o APK correto.".getBytes(java.nio.charset.StandardCharsets.UTF_8)));}
  }
  @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest r){Uri u=r.getUrl();if("https".equals(u.getScheme())&&"joaopereira1995.github.io".equals(u.getHost())&&u.getPath()!=null&&u.getPath().startsWith("/agenda-qpetiscos/"))return false;if("https".equals(u.getScheme()))startActivity(new Intent(Intent.ACTION_VIEW,u));return true;}@Override public void onPageFinished(WebView v,String u){syncWidgetSession();syncSystemTheme();} });web.loadUrl(widgetUrl(getIntent()));new Handler(Looper.getMainLooper()).postDelayed(()->splash.setVisibility(View.GONE),15000);checkUpdate(); WidgetAgenda.schedule(this); handler.post(sync); }
