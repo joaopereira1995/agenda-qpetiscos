@@ -1,0 +1,2 @@
+# Agenda QPetiscos 0.6.6
+Correções de interface, separadores de serviço, contadores, central de notificações e encaminhamento por ID. Widgets conservam cache por semana e utilizador em caso de falha de ligação. O DNS real necessita de teste no dispositivo. O formato das notificações recebidas em segundo plano continua a depender do payload do servidor FCM; não foi alterado o motor Supabase. Não incluir google-services.json no Git. Usar os secrets existentes. Publicar index.html no GitHub Pages e compilar APK. Testar em dois dispositivos antes de distribuir.
