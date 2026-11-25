@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "911824086883",
+    "project_id": "agenda-qpetiscos",
+    "storage_bucket": "agenda-qpetiscos.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911824086883:android:2f8e9e274d15081bd4d556",
+        "android_client_info": {
+          "package_name": "pt.qpetiscos.agenda"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAItEAg1-euvQhzQH_XkBBXjHBeeC7ur8w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

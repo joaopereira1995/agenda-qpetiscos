@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -10,8 +11,8 @@ android {
         applicationId 'pt.qpetiscos.agenda'
         minSdk 26
         targetSdk 35
-        versionCode 603
-        versionName '0.6.3'
+        versionCode 604
+        versionName '0.6.4'
     }
 
     buildTypes {
@@ -24,3 +25,5 @@ android {
         buildConfig true
     }
 }
+
+dependencies { implementation 'com.google.firebase:firebase-messaging:24.1.2' }
