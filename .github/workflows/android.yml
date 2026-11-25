@@ -49,7 +49,14 @@ jobs:
 
       - name: Compilar APK Release
         working-directory: android-app
-        run: gradle assembleRelease --no-daemon --stacktrace
+        shell: bash
+        run: |
+          case "$GITHUB_REF_NAME" in
+            main) BETA=false ;;
+            develop|beta/*) BETA=true ;;
+            *) echo "Utiliza main (estável) ou develop / beta/* (Beta)"; exit 1 ;;
+          esac
+          gradle assembleRelease -PqpBeta="$BETA" --no-daemon --stacktrace
 
       - name: Restaurar chave de assinatura
         env:
