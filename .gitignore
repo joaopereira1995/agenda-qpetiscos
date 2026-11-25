@@ -1,1 +1,7 @@
 /android-app/app/google-services.json
+
+# Credenciais locais e ficheiros de assinatura
+*.jks
+*.keystore
+.env
+.env.*
