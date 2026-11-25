@@ -1,0 +1,54 @@
+name: Publicar Web (Producao e Beta)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, develop]
+    paths: ['index.html', 'assets/**', '.github/workflows/pages.yml']
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: qpetiscos-pages
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout producao
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: production
+          persist-credentials: false
+      - name: Checkout beta
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          path: development
+          persist-credentials: false
+      - name: Preparar ambos os sites
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/beta
+          cp production/index.html site/index.html
+          cp -R production/assets site/assets
+          cp development/index.html site/beta/index.html
+          cp -R development/assets site/beta/assets
+          touch site/.nojekyll
+          test -s site/index.html
+          test -s site/beta/index.html
+          grep -q 'qpWebBeta' site/beta/index.html
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+      - name: Preparar artefacto
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
