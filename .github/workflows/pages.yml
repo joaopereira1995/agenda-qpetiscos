@@ -38,6 +38,16 @@ jobs:
           package=$(npm pack lucide-static@0.468.0 --pack-destination "$RUNNER_TEMP" --silent)
           python3 tools/vendor-icons.py "$RUNNER_TEMP/$package"
 
+      - name: Importar icones Lucide locais (producao)
+        working-directory: production
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f tools/vendor-icons.py ]; then
+            package=$(npm pack lucide-static@0.468.0 --pack-destination "$RUNNER_TEMP" --silent)
+            python3 tools/vendor-icons.py "$RUNNER_TEMP/$package"
+          fi
+
       - name: Preparar ambos os sites
         shell: bash
         run: |
