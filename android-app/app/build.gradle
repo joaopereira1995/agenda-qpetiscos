@@ -6,7 +6,7 @@ plugins {
 def qpBeta = providers.gradleProperty('qpBeta').map { it.toBoolean() }.orElse(false)
 def bundledWeb = layout.buildDirectory.dir('generated/qpWeb')
 tasks.register('bundleQpWeb', Sync) {
-    from(rootProject.projectDir.parentFile) { include 'index.html'; include 'assets/**' }
+    from(rootProject.projectDir.parentFile) { include 'index.html'; include 'assets/**'; include 'core/**'; include 'shared/**'; include 'mobile/**' }
     into(bundledWeb.map { it.dir('qp-web') })
 }
 android {
@@ -17,8 +17,8 @@ android {
         applicationId 'pt.qpetiscos.agenda'
         minSdk 26
         targetSdk 35
-        versionCode = qpBeta.get() ? 801 : 810
-        versionName = qpBeta.get() ? '0.8.0-beta.1' : '0.8.0'
+        versionCode = qpBeta.get() ? 802 : 810
+        versionName = qpBeta.get() ? '0.8.0-beta.2' : '0.8.0'
         buildConfigField 'boolean', 'QP_BETA', qpBeta.get().toString()
     }
 

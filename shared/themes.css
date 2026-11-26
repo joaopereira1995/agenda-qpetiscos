@@ -1,0 +1,12 @@
+/* Original approved theme definitions; preserved in cascade order. */
+:root{--bg:#fff;--panel:#f5f1ec;--fg:#402817;--sub:#795e49;--res:#402817;--take:#966039;--line:#ded0c4;--sel:#402817;--seltext:#fff;--accent:#966039;--accenttext:#fff;color-scheme:light}
+:root[data-theme=brown]{--bg:#402817;--panel:#5a3d29;--fg:#fff;--sub:#e9d9ca;--res:#f5e5d2;--take:#e5a363;--line:#92745e;--sel:#fff;--seltext:#402817;--accent:#e5a363;--accenttext:#402817;color-scheme:dark}
+:root[data-theme=lightbrown]{--bg:#966039;--panel:#80502e;--fg:#fff;--sub:#fff1e2;--res:#402817;--take:#f5d5a9;--line:#d7a77f;--sel:#fff;--seltext:#402817;--accent:#f5d5a9;--accenttext:#402817;color-scheme:dark}
+:root[data-theme=day]{--bg:#f2f3f5;--panel:#fff;--fg:#202124;--sub:#555;--line:#c9c9c9;--sel:#402817;--seltext:#fff}
+:root[data-theme=night]{--bg:#121212;--panel:#242424;--fg:#f1f1f1;--sub:#bbb;--res:#f5e5d2;--take:#e5a363;--line:#555;--sel:#f1f1f1;--seltext:#121212;--accent:#e5a363;--accenttext:#121212;color-scheme:dark}
+:root[data-theme=amoled]{--bg:#000;--panel:#000;--fg:#fff;--sub:#fff;--res:#fff;--take:#ffb86c;--line:#888;--sel:#fff;--seltext:#000;--accent:#ffb86c;--accenttext:#000;color-scheme:dark}
+:root{--radius:12px;--panel:#F4F0EA;--line:#D8C8BA;--space:12px}
+:root,:root[data-theme=white]{--bg:#FFFFFF;--panel:#F3EFE9;--fg:#402817;--sub:#795E49;--res:#402817;--take:#966039;--line:#D8C8BA;--sel:#402817;--seltext:#FFFFFF;--accent:#966039;--accenttext:#FFFFFF;--donepanel:#EAE5DE;--donefg:#795E49;color-scheme:light}
+:root[data-theme=night]{--bg:#000000;--panel:#1C1C1C;--fg:#FFFFFF;--sub:#CCCCCC;--res:#F5E5D2;--take:#E5A363;--line:#454545;--sel:#FFFFFF;--seltext:#000000;--accent:#C49A73;--accenttext:#000000;--donepanel:#141414;--donefg:#CCCCCC;color-scheme:dark}
+:root[data-theme=lightbrown]{--bg:#966039;--panel:#80502E;--fg:#FFFFFF;--sub:#FFF1E2;--res:#402817;--take:#F5D5A9;--line:#D7A77F;--sel:#FFFFFF;--seltext:#402817;--accent:#F5D5A9;--accenttext:#402817;--donepanel:#704629;--donefg:#FFF1E2;color-scheme:dark}
+:root[data-theme=brown]{--bg:#402817;--panel:#5A3D29;--fg:#FFFFFF;--sub:#E9D9CA;--res:#F5E5D2;--take:#E5A363;--line:#92745E;--sel:#FFFFFF;--seltext:#402817;--accent:#E5A363;--accenttext:#402817;--donepanel:#4B3221;--donefg:#E9D9CA;color-scheme:dark}

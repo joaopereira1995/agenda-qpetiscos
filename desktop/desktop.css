@@ -1,0 +1,110 @@
+/* Desktop layout: existing theme tokens and application handlers remain authoritative. */
+#desktopNav,#desktopNew{display:none}
+@media(min-width:768px){html.qpDesktop{--deskWidth:220px}html.qpDesktop.deskCollapsed{--deskWidth:64px}
+html.qpDesktop main{max-width:none;margin:0 0 0 var(--deskWidth);padding:20px clamp(16px,3vw,42px) 32px;min-height:100vh}
+html.qpDesktop #bottomNav{display:none!important}html.qpDesktop #desktopNav{display:flex;flex-direction:column;gap:8px;position:fixed;inset:0 auto 0 0;width:var(--deskWidth);padding:14px 10px;background:var(--panel);border-right:1px solid var(--line);overflow:auto;z-index:20}
+#desktopNav button{display:flex;align-items:center;gap:12px;text-align:left;background:transparent;padding:12px;color:var(--fg);white-space:nowrap;min-height:40px}#desktopNav button svg{width:19px;height:19px;flex:none}#desktopNav button[aria-current=page]{background:var(--accent);color:var(--accenttext);font-weight:650}#desktopNav .deskBrand{width:100%;height:78px;object-fit:contain;padding:6px}#deskCollapse{justify-content:flex-end}#deskFooter{margin-top:auto;padding:10px 6px;border-top:1px solid var(--line);color:var(--sub);font-size:11px;line-height:1.6;overflow-wrap:anywhere}.deskCollapsed #desktopNav button{justify-content:center;padding:10px}.deskCollapsed #desktopNav .deskLabel,.deskCollapsed #deskFooter{display:none}.deskCollapsed #desktopNav .deskBrand{height:44px}
+html.qpDesktop #appHeader{display:flex!important;justify-content:space-between;min-height:58px;border-bottom:1px solid var(--line);margin-bottom:18px;padding-bottom:12px}html.qpDesktop #appHeader[hidden]{display:none!important}html.qpDesktop #headerLogo{display:none}html.qpDesktop #pageTitle{display:block!important;order:-1;font-size:22px;margin:0;flex:1}html.qpDesktop #desktopNew:not([hidden]){display:inline-flex;gap:6px;align-items:center;background:var(--accent);color:var(--accenttext);padding:10px 14px;font-weight:650}#desktopNew svg{width:18px;height:18px}
+html.qpDesktop #week{gap:8px}html.qpDesktop #week button{min-height:64px}html.qpDesktop #monthGrid{gap:6px}html.qpDesktop #monthGrid button{min-height:65px;align-items:flex-start;padding:8px 12px;justify-content:space-between}html.qpDesktop #monthGrid .counts{width:100%}html.qpDesktop #monthGrid .counts span{min-width:30px;text-align:center}html.qpDesktop .deskServices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;align-items:start}html.qpDesktop .deskService{min-width:0}html.qpDesktop .deskService h3{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:1.1em}html.qpDesktop .deskService h3 svg{width:19px;height:19px;color:var(--accent)}html.qpDesktop .event{margin:8px 0}html.qpDesktop .actions button{width:30px;min-width:30px;height:34px;min-height:34px}html.qpDesktop .actions button svg{width:18px;height:18px}
+html.qpDesktop .deskTableWrap{overflow:auto;border:1px solid var(--line);border-radius:12px}html.qpDesktop .deskTable{border-collapse:collapse;width:100%;text-align:left;min-width:650px}html.qpDesktop .deskTable th,html.qpDesktop .deskTable td{padding:11px 9px;border-bottom:1px solid var(--line);vertical-align:middle}html.qpDesktop .deskTable th{background:var(--panel);white-space:nowrap}html.qpDesktop .deskTable th button{background:transparent;padding:0;font-weight:700}html.qpDesktop .deskTable tr[data-event]{cursor:pointer}html.qpDesktop .deskTable tr[data-event]:hover{background:var(--panel)}html.qpDesktop .deskTable td:first-child{border-left:4px solid var(--stripe)}html.qpDesktop .deskTable tr.done td:not(:last-child){opacity:.6}html.qpDesktop .deskTable .actions{display:flex;justify-content:flex-end;flex-direction:row}html.qpDesktop .deskTable td:nth-child(4){overflow-wrap:anywhere;max-width:270px}
+html.qpDesktop #ntList{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}html.qpDesktop #ntList>.ntEmpty,html.qpDesktop #ntList>.muted{grid-column:1/-1}html.qpDesktop #settingsPanel{max-width:none}html.qpDesktop #settingsPanel .setting{max-width:none}html.qpDesktop .mgPanel{max-width:none}html.qpDesktop .mgHeading>button:first-child,html.qpDesktop #mgSettingsBack{display:none}html.qpDesktop #statsContent .qpChartGrid{grid-template-columns:repeat(2,minmax(0,1fr))}html.qpDesktop #statsContent .mgKpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+html.qpDesktop :is(#modal,#detailsModal,#ntForm,#ntDetail,#ntHistory,#notificationModal)[open]{position:fixed;inset:0 0 0 auto;margin:0;width:min(490px,52vw);max-width:none;height:100dvh;max-height:100dvh;border-radius:16px 0 0 16px;overflow:auto;animation:none}html.qpDesktop :is(#modal,#detailsModal,#ntForm,#ntDetail,#ntHistory,#notificationModal)::backdrop{background:#0003}html.qpDesktop #ntDetail .ntSection{padding:12px}html.qpDesktop #toast,html.qpDesktop #remoteToast{bottom:20px}
+}
+@media(min-width:768px) and (max-width:1050px){html.qpDesktop{--deskWidth:180px}html.qpDesktop .deskServices{grid-template-columns:1fr}html.qpDesktop #ntList{grid-template-columns:1fr}}
+
+/* Desktop refinements; theme colors come exclusively from shared/base.css. */
+@media(min-width:768px){
+html.qpDesktop main{max-width:1800px;padding-top:22px}
+html.qpDesktop #desktopNav{box-sizing:border-box}
+html.qpDesktop #desktopNav button{font-size:13px}
+html.qpDesktop #desktopNav button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+html.qpDesktop #deskFooter{margin-top:auto}
+html.qpDesktop #appHeader .qpHeaderLeft{order:1;gap:10px}
+html.qpDesktop #appHeader .headerActions{order:2}
+html.qpDesktop #appHeader #pageTitle{display:block!important;font-size:24px}
+html.qpDesktop #appHeader[hidden]{display:none!important}
+html.qpDesktop #appHeader #headerNotes{max-width:none}
+html.qpDesktop #week,html.qpDesktop #monthGrid{margin-bottom:16px}
+html.qpDesktop #monthGrid button{min-height:74px;border:1px solid var(--line)}
+html.qpDesktop #monthGrid button.active .counts span{border:1px solid var(--seltext)}
+html.qpDesktop #listPanel>header{gap:12px;margin-top:14px}
+html.qpDesktop #listPanel>header strong{flex:1;font-size:17px}
+html.qpDesktop .deskService h3{border-bottom:1px solid var(--line);padding:12px 0;flex-wrap:wrap}
+html.qpDesktop .deskService h3 small{margin-left:auto;font-size:11px;font-weight:400}
+html.qpDesktop .deskService .event{min-height:82px;padding:12px}
+html.qpDesktop .deskTable td:nth-child(6){white-space:pre-wrap;overflow-wrap:anywhere;max-width:300px}
+html.qpDesktop .deskTable td:nth-child(8){width:120px}
+html.qpDesktop #notesPanel .ntSummary{max-width:none}
+html.qpDesktop #notesPanel .ntSearchWrap{max-width:600px}
+html.qpDesktop #notesPanel .ntFilters{display:flex;flex-wrap:wrap;justify-content:flex-start;gap:7px;overflow:visible}
+html.qpDesktop #notesPanel .ntFilters button{flex:0 1 auto;min-width:0;padding:9px 13px}
+html.qpDesktop #notesPanel .ntActions{justify-content:flex-start;gap:10px}
+html.qpDesktop #notesPanel .ntActions button{flex:0 1 auto;padding:10px 16px}
+html.qpDesktop #ntList{gap:16px}
+html.qpDesktop #ntList .ntCard{min-width:0;align-self:start}
+html.qpDesktop #ntList .ntOpen{min-width:0;text-align:left;overflow-wrap:anywhere}
+html.qpDesktop #settingsPanel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+html.qpDesktop #settingsPanel[hidden]{display:none!important}
+html.qpDesktop #settingsPanel>h3,html.qpDesktop #settingsPanel>section,html.qpDesktop #settingsPanel>footer{grid-column:1/-1}
+html.qpDesktop #settingsPanel>.setting{margin:0}
+html.qpDesktop #historyPanel .mgDates,html.qpDesktop #historyPanel .mgControl{max-width:760px}
+html.qpDesktop #historyPanel #histSearch,html.qpDesktop #historyPanel #histDevice{max-width:600px}
+html.qpDesktop #statsPeriodButtons,html.qpDesktop #statsTabs{max-width:900px}
+html.qpDesktop #desktopNew:disabled{opacity:.5;cursor:not-allowed}
+html.qpDesktop #desktopNav .deskBrand{cursor:pointer}
+}
+@media(min-width:768px) and (max-width:1199px){html.qpDesktop #settingsPanel{grid-template-columns:1fr}html.qpDesktop #statsContent .mgKpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+@media(min-width:768px){
+html.qpDesktop #desktopNav .deskBrandButton{padding:0;justify-content:center;min-height:0}
+html.qpDesktop #desktopNav .deskBrand{max-width:160px;height:90px;object-fit:contain}
+html.qpDesktop.deskCollapsed #desktopNav .deskBrand{max-width:100%;height:44px}
+html.qpDesktop #monthGrid button{min-height:clamp(48px,5.5vh,60px);padding:6px 10px}
+html.qpDesktop #monthGrid{gap:5px;margin-top:6px;margin-bottom:8px}
+html.qpDesktop #calendarControls nav{margin:4px 0;padding:6px}
+html.qpDesktop #calendarControls .legend{margin:6px 0}
+html.qpDesktop .deskService .event{min-height:70px;padding:10px}
+html.qpDesktop .deskService h3{padding:8px 0}
+html.qpDesktop #notesPanel #ntBack,html.qpDesktop #statisticsPanel #mgStatsBack,html.qpDesktop #historyPanel #mgHistBack,html.qpDesktop #mgSettingsBack{display:none!important}
+html.qpDesktop #notesPanel>.mgHeading h2,html.qpDesktop #statisticsPanel>.mgHeading h2,html.qpDesktop #historyPanel>.mgHeading h2{font-size:1.1em}
+html.qpDesktop #notesPanel>.mgHeading h2{visibility:hidden}
+html.qpDesktop #notesPanel>.mgHeading{min-height:0;margin-top:-8px}
+html.qpDesktop #ntDetail .ntActions{display:flex;flex-wrap:wrap;gap:7px}
+html.qpDesktop #ntDetail .ntActions button{flex:1 1 42%;min-height:36px;padding:9px}
+html.qpDesktop #ntDetail .ntDetailCard{padding:14px;gap:8px}
+html.qpDesktop #ntDetail #ntInteractions .ntSection{padding:12px;gap:7px}
+html.qpDesktop #ntDetail .ntDescription{padding:9px}
+html.qpDesktop #settingsPanel #betaNotice .prefRow{display:flex;align-items:center;gap:12px;margin:0}
+html.qpDesktop #settingsPanel #betaNotice .prefGlyph{flex:0 0 auto}
+html.qpDesktop #settingsPanel #betaNotice .prefText{flex:1;min-width:0}
+html.qpDesktop #settingsPanel #betaNotice #betaEdit{width:20px;height:20px;flex:0 0 auto;accent-color:var(--accent)}
+html.qpDesktop #settingsPanel #betaNotice #betaModeStatus{margin:12px 0 6px}
+}
+@media(min-width:768px){
+html.qpDesktop #notesPanel{grid-template-columns:minmax(0,1fr) auto;align-items:center}
+html.qpDesktop #notesPanel>.mgHeading{display:contents}
+html.qpDesktop #notesPanel>.mgHeading h2{display:none}
+html.qpDesktop #notesPanel #ntRefresh{grid-row:2;grid-column:2;align-self:center}
+html.qpDesktop #notesPanel .ntSummary{grid-row:1;grid-column:1/-1}
+html.qpDesktop #notesPanel .ntSearchWrap{grid-row:2;grid-column:1}
+html.qpDesktop #notesPanel .ntFilters{grid-row:3;grid-column:1/-1}
+html.qpDesktop #notesPanel .ntActions{grid-row:4;grid-column:1/-1}
+html.qpDesktop #notesPanel #ntStatus{grid-row:5;grid-column:1/-1;margin:0}
+html.qpDesktop #notesPanel #ntList{grid-row:6;grid-column:1/-1}
+html.qpDesktop #statisticsPanel>.mgHeading h2{font-size:0}
+html.qpDesktop #statisticsPanel>.mgHeading h2 small{font-size:13px;margin:0}
+html.qpDesktop #historyPanel>.mgHeading h2{font-size:13px;font-weight:500}
+html.qpDesktop #monthTitle{text-transform:none}
+}
+
+@media(min-width:768px){
+html.qpDesktop #filters.deskMetricGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:0;background:transparent;margin:12px 0}
+html.qpDesktop #filters.deskMetricGrid>button,html.qpDesktop .deskPeopleMetric{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-items:center;gap:3px 9px;text-align:left;white-space:normal;padding:10px 13px;min-height:64px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--fg)}
+html.qpDesktop #filters.deskMetricGrid>button.active{background:var(--sel)!important;color:var(--seltext)!important;border-color:var(--sel)}
+html.qpDesktop #filters.deskMetricGrid svg{width:19px;height:19px;grid-row:1;grid-column:1;color:var(--accent)}
+html.qpDesktop #filters.deskMetricGrid>button.active svg{color:var(--seltext)}
+html.qpDesktop #filters.deskMetricGrid .deskMetricValue{grid-row:1;grid-column:2;font-weight:700;font-size:21px;line-height:1.15}
+html.qpDesktop #filters.deskMetricGrid>button>span:last-child,html.qpDesktop .deskPeopleMetric>span:last-child{grid-row:2;grid-column:1/-1;color:var(--sub);font-size:11px}
+html.qpDesktop #filters.deskMetricGrid>button.active>span:last-child{color:var(--seltext)}
+}
+@media(min-width:768px) and (max-width:900px){html.qpDesktop #filters.deskMetricGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}

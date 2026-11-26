@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main, develop]
-    paths: ['index.html', 'assets/**', '.github/workflows/pages.yml']
+    paths: ['index.html', 'assets/**', 'core/**', 'shared/**', 'mobile/**', 'desktop/**', '.github/workflows/pages.yml']
 permissions:
   contents: read
   pages: write
@@ -39,10 +39,19 @@ jobs:
           cp -R production/assets site/assets
           cp development/index.html site/beta/index.html
           cp -R development/assets site/beta/assets
+          for dir in core shared mobile desktop; do
+            if [ -d "production/$dir" ]; then cp -R "production/$dir" "site/$dir"; fi
+            if [ -d "development/$dir" ]; then cp -R "development/$dir" "site/beta/$dir"; fi
+          done
           touch site/.nojekyll
           test -s site/index.html
           test -s site/beta/index.html
-          grep -q 'qpWebBeta' site/beta/index.html
+          if [ -f site/beta/core/app.js ]; then
+            grep -q 'qpWebBeta' site/beta/core/app.js
+            for file in shared/themes.css shared/base.css mobile/mobile.js core/view.js core/app.js core/bootstrap.js desktop/desktop.js desktop/desktop.css; do test -s "site/beta/$file"; done
+          else
+            grep -q 'qpWebBeta' site/beta/index.html
+          fi
       - name: Configurar Pages
         uses: actions/configure-pages@v5
       - name: Preparar artefacto
