@@ -140,3 +140,63 @@ html.qpDesktop #statsContent .qpChartGrid{grid-template-columns:minmax(0,1.35fr)
 html.qpDesktop #statsContent .qpChartGrid .mgCard strong{color:var(--fg)}html.qpDesktop #statsContent .qpChartGrid .mgCard small{color:var(--sub)}
 }
 @media(min-width:768px) and (max-width:1100px){html.qpDesktop #statsContent .qpChartGrid{grid-template-columns:1fr}html.qpDesktop #historyPanel .mgDates{grid-template-columns:1fr 1fr}html.qpDesktop #historyPanel .mgDates button{grid-column:1/-1}}
+/* Desktop 2.2: compact controls and theme-safe presentation. */
+.deskHistToggle,.deskIdentity{display:none}
+@media(min-width:768px){
+html.qpDesktop :is(#agendaControls,#calendarControls) nav{padding:8px 12px;align-items:center;gap:12px}
+html.qpDesktop :is(#prev,#next,#monthPrev,#monthNext,#dateTitle,#monthTitle){background:transparent!important;border:0!important;box-shadow:none!important;color:var(--fg);border-radius:8px;cursor:pointer}
+html.qpDesktop :is(#prev,#next,#monthPrev,#monthNext){width:44px;min-width:44px;font-size:28px;line-height:1}
+html.qpDesktop :is(#dateTitle,#monthTitle){flex:1;text-align:center;padding:10px;min-width:0}
+html.qpDesktop :is(#prev,#next,#monthPrev,#monthNext,#dateTitle,#monthTitle):hover{background:color-mix(in srgb,var(--accent) 10%,transparent)!important}
+html.qpDesktop #desktopNav .deskBrandButton{background:transparent!important;border:0;box-shadow:none}
+html.qpDesktop .deskIdentity{display:flex;align-items:center;gap:6px;padding:8px 0 12px;border-bottom:1px solid var(--line);min-width:0}
+html.qpDesktop #desktopNav #profileButton{display:flex;flex:1;min-width:0;white-space:normal;padding:6px;gap:8px;align-items:center;flex-direction:row;text-align:left}
+html.qpDesktop #desktopNav #headerDevice{white-space:normal;overflow-wrap:anywhere;max-width:none;text-overflow:clip;color:var(--fg);font-size:12px}
+html.qpDesktop #desktopNav #headerNotes{position:relative;flex:none;padding:8px;min-width:38px;display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center}
+html.qpDesktop #desktopNav #headerNotes[hidden]{display:none!important}
+html.qpDesktop #desktopNav #headerNotes .qpHeaderLabel{display:none}
+html.qpDesktop #appHeader .qpHeaderLeft:empty{display:none}
+html.qpDesktop.deskCollapsed .deskIdentity{flex-direction:column}
+html.qpDesktop.deskCollapsed #headerDevice{display:none}
+html.qpDesktop .deskPager>div{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+html.qpDesktop .deskPager select{width:auto!important;min-width:72px;max-width:90px;margin:0;flex:0 0 auto}
+html.qpDesktop .deskPager label{margin:0;font-size:13px;color:var(--sub);white-space:nowrap}
+html.qpDesktop .deskHistToolbar{display:flex;align-items:center;gap:12px;grid-column:1/-1}
+html.qpDesktop .deskHistToolbar #histSearch{flex:1;min-width:0;width:auto;margin:0}
+html.qpDesktop .deskHistToggle{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;background:var(--panel);color:var(--fg);border:1px solid var(--line);white-space:nowrap}
+html.qpDesktop .deskHistToggle svg{width:20px;height:20px}
+html.qpDesktop .deskHistToggle[aria-expanded=true]{background:var(--accent);color:var(--accenttext)}
+html.qpDesktop #historyPanel.deskHistClosed :is(#histDates,.mgControl,#histDevice){display:none!important}
+html.qpDesktop #historyPanel:not(.deskHistClosed) .mgDates{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto}
+html.qpDesktop #historyPanel:not(.deskHistClosed) .mgDates button{grid-column:auto;width:auto}
+html.qpDesktop .deskSettingsNav button{display:flex;align-items:center;gap:11px;border-color:transparent!important;background:transparent}
+html.qpDesktop .deskSettingsNav button svg{width:19px;height:19px;flex:none;color:var(--accent)}
+html.qpDesktop #settingsPanel>.deskSettingsNav button.active{background:var(--panel);color:var(--fg);border:1px solid var(--accent)!important}
+html.qpDesktop .deskSettingHeading h2{font-size:23px;margin:0 0 4px;color:var(--fg)}
+html.qpDesktop .deskSettingHeading p,.deskThemeSection p{color:var(--sub);font-size:14px;margin:0}
+html.qpDesktop .deskThemeSection{background:var(--panel);border-radius:12px;padding:20px}
+html.qpDesktop .deskThemeSection h3{margin:0 0 4px;color:var(--fg)}
+html.qpDesktop .deskThemeGrid{margin-top:16px;grid-template-columns:repeat(2,minmax(0,1fr));max-width:760px}
+html.qpDesktop .deskThemeGrid button{background:var(--bg);color:var(--fg)}
+html.qpDesktop .deskThemeSample{display:flex;gap:7px;height:100px;padding:10px}
+html.qpDesktop .deskThemeSample i{margin:0;display:block}
+html.qpDesktop .deskThemeSample .sampleSide{width:22%;height:100%;flex:none}
+html.qpDesktop .sampleMain{flex:1;display:flex;flex-direction:column;gap:7px;min-width:0}
+html.qpDesktop .sampleMain>i{width:100%;height:12px;flex:none}
+html.qpDesktop .sampleMain>span{display:flex;gap:7px;flex:1}
+html.qpDesktop .sampleMain>span>i{width:50%;height:100%}
+html.qpDesktop #deskStatsDialog .deskStatTotals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:24px}
+html.qpDesktop #deskStatsDialog .deskStatTotals>div{background:var(--panel);border-radius:10px;padding:14px 8px;text-align:center}
+html.qpDesktop #deskStatsDialog .deskStatTotals strong{display:block;font-size:25px;color:var(--fg)}
+html.qpDesktop #deskStatsDialog .deskStatTotals small{color:var(--sub);font-size:12px}
+html.qpDesktop #deskStatsDialog .deskStatEvents>h3{display:flex;gap:8px;align-items:center;font-size:15px;margin:20px 0 10px}
+html.qpDesktop #deskStatsDialog .deskStatEvent{background:var(--panel);border-left:4px solid var(--stripe);border-radius:10px;padding:16px;margin:10px 0;display:grid;gap:8px;color:var(--fg)}
+html.qpDesktop #deskStatsDialog .deskStatEventTop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+html.qpDesktop #deskStatsDialog .deskStatEventTop strong{font-size:23px;color:var(--fg)}
+html.qpDesktop #deskStatsDialog .deskStatEventTop span{font-size:13px;color:var(--fg)}
+html.qpDesktop #deskStatsDialog .deskStatEvent h3{margin:0;font-size:17px}
+html.qpDesktop #deskStatsDialog .deskStatEvent small{display:flex;align-items:center;gap:6px;color:var(--sub)}
+html.qpDesktop #deskStatsDialog .deskStatEvent p{background:var(--bg);padding:9px;border-radius:6px;white-space:pre-wrap;margin:0}
+html.qpDesktop #deskStatsDialog svg{width:17px;height:17px;flex:none;color:var(--accent)}
+}
+@media(min-width:768px) and (max-width:1050px){html.qpDesktop #historyPanel:not(.deskHistClosed) .mgDates{grid-template-columns:1fr 1fr}html.qpDesktop #historyPanel:not(.deskHistClosed) .mgDates button{grid-column:1/-1}html.qpDesktop .deskIdentity{gap:2px}html.qpDesktop #desktopNav #profileButton{gap:4px}}
