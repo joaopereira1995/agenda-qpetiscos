@@ -235,3 +235,5 @@ svg[data-qp-icon]{stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex
 
 html.qpDesktop #settingsPanel .deskSettingsNav button svg,html.qpDesktop #settingsPanel .deskSettingsNav button.active svg{color:inherit;stroke:currentColor;width:20px;height:20px;}
 html.qpDesktop .deskHistToggle svg{color:inherit;stroke:currentColor;}
+
+html.qpDesktop #reportsPanel .reportPreview{grid-template-columns:repeat(3,minmax(0,1fr))}html.qpDesktop #reportsPanel .reportFilters{max-width:760px}html.qpDesktop #reportsPanel #reportBack{display:none}
