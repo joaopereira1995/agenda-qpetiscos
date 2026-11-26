@@ -8,6 +8,7 @@
 <service android:name=".AgendaMessagingService" android:exported="false"><intent-filter><action android:name="com.google.firebase.MESSAGING_EVENT"/></intent-filter></service>
 <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="qpetiscos_notifications"/>
 <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_notification"/>
+<provider android:name=".ReportProvider" android:authorities="${applicationId}.reports" android:exported="false" android:grantUriPermissions="true"/>
 <provider android:name=".UpdateProvider" android:authorities="${applicationId}.updates" android:exported="false" android:grantUriPermissions="true"/>
 
 <receiver android:name=".NotesWidget" android:label="QPetiscos notas" android:exported="false"><intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter><meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_notes"/></receiver>
