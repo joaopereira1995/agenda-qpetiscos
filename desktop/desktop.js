@@ -4,7 +4,7 @@ const deskMedia=matchMedia('(min-width:768px)');
 const deskOn=()=>!window.QPetiscosNative&&deskMedia.matches;
 const deskRoot=document.documentElement;
 const deskNav=document.createElement('aside');deskNav.id='desktopNav';deskNav.setAttribute('aria-label','Navegação desktop');
-const deskLinks=[['agenda','Agenda','calendar'],['calendar','Calendário','calendar'],['events','Eventos','list'],['reports','Relatórios','stats'],['menu','Menu','reserve'],['notes','Notas internas','note'],['statistics','Estatísticas','stats'],['history','Histórico','history'],['settings','Definições','settings']];
+const deskLinks=[['agenda','Agenda','calendar'],['calendar','Calendário','calendar'],['events','Eventos','list'],['reports','Relatórios','list'],['menu','Menu','reserve'],['notes','Notas internas','note'],['statistics','Estatísticas','stats'],['history','Histórico','history'],['settings','Definições','settings']];
 deskNav.innerHTML='<button id="deskCollapse" aria-label="Recolher menu" aria-expanded="true">'+qi('chevronDown')+'</button><button class="deskBrandButton" title="Agenda de hoje" aria-label="Agenda de hoje"><img class="deskBrand" alt="QPetiscos"></button>'+deskLinks.map(([key,label,glyph])=>`<button data-desk-tab="${key}" title="${label}">${key==='agenda'||key==='calendar'||key==='events'?document.querySelector('#bottomNav [data-tab="'+key+'"]').querySelector('svg').outerHTML:mgIcon(glyph)}<span class="deskLabel">${label}</span></button>`).join('')+'<div id="deskFooter"></div>';
 document.querySelector('main').prepend(deskNav);
 const deskNew=document.createElement('button');deskNew.id='desktopNew';deskNew.innerHTML=qi('plus')+' Novo evento';deskNew.onclick=()=>$('add').click();$('listPanel').querySelector('header').append(deskNew);
