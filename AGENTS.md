@@ -1,7 +1,7 @@
 # Agenda QPetiscos — Development guidelines
 
 ## Workflow and release safety
-- Work on develop. Never commit, merge, deploy or release to main without explicit owner approval.
+- Work on develop. Never write to, commit, push, merge, deploy or release to main. Main is exclusively controlled by the owner, even after approval of a stable version.
 - Read current repository files before changing them; preserve unrelated code and user changes. Prefer small, coherent commits with descriptive messages.
 - Review diffs, run relevant tests and report actual results, limitations and migration/deployment steps. Do not claim tests were run when they were not.
 - Beta Web and Android must be validated by the owner before stable release. Maintain existing GitHub Pages root (stable) and /beta/ (develop) separation.
