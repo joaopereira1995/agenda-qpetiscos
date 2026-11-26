@@ -1,0 +1,41 @@
+# Agenda QPetiscos — Development guidelines
+
+## Workflow and release safety
+- Work on develop. Never commit, merge, deploy or release to main without explicit owner approval.
+- Read current repository files before changing them; preserve unrelated code and user changes. Prefer small, coherent commits with descriptive messages.
+- Review diffs, run relevant tests and report actual results, limitations and migration/deployment steps. Do not claim tests were run when they were not.
+- Beta Web and Android must be validated by the owner before stable release. Maintain existing GitHub Pages root (stable) and /beta/ (develop) separation.
+- Update version metadata consistently for feature releases, including Android versionCode/versionName and visible version/changelog where applicable. Documentation-only commits need no version bump.
+- No secrets, tokens, service-account keys, signing material or personal restaurant data in commits or logs. Use existing secrets and configuration.
+- Do not create, edit or delete real reservations, takeaways, notes or tasks for testing. Beta shares production Supabase; respect read-only mode and explicit owner approval for production changes. Use mocks or isolated test data/environments.
+- Database migrations must be additive/backward-compatible where possible, reviewed separately, and supplied with validation and rollback guidance. Never execute production SQL or modify Edge Functions without explicit authorization. Preserve existing stable clients and notification behavior.
+
+## Architecture
+- Inspect existing structure before implementation: index.html, core/, shared/, mobile/, desktop/, assets/, android-app/, .github/. Reuse existing helpers and components rather than duplicating them.
+- Android packages the web interface locally; ensure new scripts/assets are included by the native loader/build. Web updates alone do not update installed APKs.
+- Preserve shared-account multi-device identity, per-device settings, Supabase synchronization and Firebase push infrastructure. Preserve autonomous widget sessions, token refresh, cached data and network failure handling.
+- Keep changes minimal; avoid unrelated refactors and obsolete SQL/README artifacts. Include only necessary current migration/validation scripts.
+- The menu is informational and local/offline: no product management, availability tracking or ordering. Preserve verified original names, prices, variants and descriptions.
+
+## Design and accessibility
+- Use Portuguese (Portugal), existing logo and consistent outline icons. No emoji substitutes for interface icons.
+- Maintain four app themes: Diurno (#FFFFFF background, #F3EFE9 cards, #402817 text, #966039 accent); Noturno (#000000, #1C1C1C, #FFFFFF, #C49A73); Castanho claro (#966039, #80502E, #FFFFFF, #F5D5A9); Castanho escuro (#402817, #5A3D29, #FFFFFF, #E5A363).
+- Preserve bottom navigation Agenda / Calendário / Novo / Eventos / Mais; logo returns to today's Agenda. Respect existing font sizing and responsive behavior.
+- Cards compact, rounded, with integrated colored left stripe where appropriate; avoid overflow, clipped labels and oversized icons. Dialogs centered, dismissible outside, with accessible controls. Completed events remain in app without strikethrough, in muted style; widgets hide completed items.
+- Preserve approved menu: mobile two-column category grid, web category sidebar, search and inline descriptions/price variants.
+- For visual changes, provide actual rendered previews where feasible, explicitly distinguishing prototypes from implementation. Validate narrow mobile and desktop layouts and all themes.
+
+## Approved notes/tasks roadmap
+- v0.8.0-beta.3: notes notifications and task reminders. v0.8.0-beta.4: notes widget. RC then stable only after owner validation.
+- Notes and tasks support importance, pinning, optional assignment and deadline, comments/replies, read confirmation, history and recycling. Preserve existing behavior.
+- Android notification designs: new note, important note, new task, reminder, comment, completed task; use existing personalized notification style, expand/collapse, and deep link to relevant item.
+- In-app notification center: Todas / Eventos / Notas, unread indicators, mark read, deletion of notification only, expansion and item navigation.
+- Per-device preferences: new notes, important notes, new tasks, tasks assigned to me, edits, comments, completed/reopened tasks, task reminders. Preserve existing event preferences.
+- Reminder options: at deadline, 5/15/30/60/120/1440 minutes before; recipients all devices, assigned device or current device. Cancel obsolete reminders on completion/deletion and reconcile edits/reopening; avoid duplicate deliveries.
+- Notes widget: opaque Branco / Castanho claro / Castanho escuro themes; compact cards, Todas / Notas / Tarefas filters and counts; pinned items prioritized, pending tasks only, overdue tasks highlighted red, no comment counts or delete button. Expand descriptions, open item details, complete task, confirm important note reading, refresh and create via app. Preserve cache on connection failure. Reopened tasks reappear; confirmed notes remain visible.
+- Native Android notification and widget behavior must be verified on-device; browser validation is not a substitute.
+
+## Validation
+- Check syntax/build and relevant automated tests, if available. Review responsive UI, navigation, permissions, offline behavior and regressions.
+- For releases verify GitHub Actions results, Beta Web, Android APK and owner acceptance. Report exact commit and changed files.
+- Do not assume production migrations or deployments succeeded. Explicitly communicate outstanding checks and blockers.
