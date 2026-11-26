@@ -17,8 +17,8 @@ android {
         applicationId 'pt.qpetiscos.agenda'
         minSdk 26
         targetSdk 35
-        versionCode = qpBeta.get() ? 909 : 910
-        versionName = qpBeta.get() ? '0.9.0-beta.2.1' : '0.8.0'
+        versionCode = qpBeta.get() ? 911 : 912
+        versionName = qpBeta.get() ? '0.9.0-beta.2.2' : '0.8.0'
         buildConfigField 'boolean', 'QP_BETA', qpBeta.get().toString()
     }
 
