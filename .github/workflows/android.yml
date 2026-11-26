@@ -13,6 +13,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Importar icones Lucide locais
+        if: github.ref_name != 'main'
+        working-directory: .
+        shell: bash
+        run: |
+          set -euo pipefail
+          package=$(npm pack lucide-static@0.468.0 --pack-destination "$RUNNER_TEMP" --silent)
+          python3 tools/vendor-icons.py "$RUNNER_TEMP/$package"
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin

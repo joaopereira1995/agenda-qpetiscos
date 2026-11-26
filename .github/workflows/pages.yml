@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main, develop]
-    paths: ['index.html', 'assets/**', 'core/**', 'shared/**', 'mobile/**', 'desktop/**', '.github/workflows/pages.yml']
+    paths: ['index.html', 'assets/**', 'core/**', 'shared/**', 'mobile/**', 'desktop/**', 'tools/**', '.github/workflows/pages.yml']
 permissions:
   contents: read
   pages: write
@@ -30,6 +30,14 @@ jobs:
           ref: develop
           path: development
           persist-credentials: false
+      - name: Importar icones Lucide locais
+        working-directory: development
+        shell: bash
+        run: |
+          set -euo pipefail
+          package=$(npm pack lucide-static@0.468.0 --pack-destination "$RUNNER_TEMP" --silent)
+          python3 tools/vendor-icons.py "$RUNNER_TEMP/$package"
+
       - name: Preparar ambos os sites
         shell: bash
         run: |

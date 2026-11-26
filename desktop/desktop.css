@@ -208,7 +208,7 @@ html.qpDesktop :is(main,dialog) :is(input,textarea,[contenteditable=true]),html.
 html.qpDesktop :is(main,dialog) :is(p,span,h1,h2,h3,strong,small,td,th){cursor:default}
 html.qpDesktop :is(main,dialog) button *,html.qpDesktop [data-event] *,html.qpDesktop [data-month-day] *{cursor:pointer}
 html.qpDesktop :is(main,dialog) :is(input:not([type=checkbox]):not([type=radio]),textarea,[contenteditable=true]){cursor:text}
-html.qpDesktop #desktopNav #profileButton svg{width:24px;height:24px;stroke:var(--fg);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+html.qpDesktop #desktopNav #profileButton svg{width:24px;height:24px;stroke:var(--fg);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 html.qpDesktop .deskHistToolbar{align-items:center;gap:12px}
 html.qpDesktop .deskHistToolbar #histSearch,html.qpDesktop .deskHistToggle{height:44px;min-height:44px;margin:0;box-sizing:border-box}
 html.qpDesktop .deskHistToggle svg{display:block;flex:none;width:20px;height:20px;fill:none;stroke:currentColor;transform:none}
@@ -229,3 +229,9 @@ html.qpDesktop .deskSettingGroup .setting:has(#minus){display:grid;grid-template
 html.qpDesktop .deskSettingGroup .setting:has(#minus) button{min-width:42px;height:42px;margin:0}
 }
 @media(min-width:1350px){html.qpDesktop .deskThemeGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* Unified outline icons */
+svg[data-qp-icon]{stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;vertical-align:middle;}
+
+html.qpDesktop #settingsPanel .deskSettingsNav button svg,html.qpDesktop #settingsPanel .deskSettingsNav button.active svg{color:inherit;stroke:currentColor;width:20px;height:20px;}
+html.qpDesktop .deskHistToggle svg{color:inherit;stroke:currentColor;}
