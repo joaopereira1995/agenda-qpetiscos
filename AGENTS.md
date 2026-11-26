@@ -39,3 +39,5 @@
 - Check syntax/build and relevant automated tests, if available. Review responsive UI, navigation, permissions, offline behavior and regressions.
 - For releases verify GitHub Actions results, Beta Web, Android APK and owner acceptance. Report exact commit and changed files.
 - Do not assume production migrations or deployments succeeded. Explicitly communicate outstanding checks and blockers.
+
+- Every delivery requesting compilation or testing must include an actionable interactive validation checklist, with pass/fail/not applicable, regression cases, exact version/commit and a way to report results. Do not mark unexecuted tests as passed.
