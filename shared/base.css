@@ -97,3 +97,5 @@ svg[data-qp-icon]{stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex
 #notificationList .noticeItem[data-kind=note] .noticeIcon,#notificationList .noticeItem[data-kind=important] .noticeIcon{color:var(--notice-stripe,#7497A6)}
 #ntReminderBox[hidden],#ntReminderOptions[hidden]{display:none!important}
 #ntReminderOptions{display:grid;gap:8px;padding:8px 0}
+
+.ntOverdue{--mgstripe:#C43E38!important;--ntstripe:#C43E38!important;background:color-mix(in srgb,#C43E38 12%,var(--card,#f3efe9))!important;border-left:4px solid #C43E38!important}.ntOverdue .ntTag,.ntOverdue .ntMeta:first-of-type{color:#C43E38;font-weight:600}.ntOverdue .ntMeta{color:inherit}.ntOverdue .ntMeta:first-of-type{color:light-dark(#A72A25,#FFB3AC)}
