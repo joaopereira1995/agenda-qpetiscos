@@ -19,7 +19,7 @@ public class MainActivity extends Activity {
   Uri u=r.getUrl();if(!"https".equals(u.getScheme())||!"joaopereira1995.github.io".equals(u.getHost()))return null;
   String path=u.getPath(),prefix="/agenda-qpetiscos/";if(path==null||!path.startsWith(prefix))return null;
   String local=path.substring(prefix.length());if(local.isEmpty())local="index.html";
-  if(!local.equals("index.html")&&!local.equals("assets/vendor/plotly.min.js")&&!local.matches("assets/[A-Za-z0-9._-]+")&&!local.equals("core/app.js")&&!local.equals("core/bootstrap.js")&&!local.equals("mobile/mobile.js")&&!local.equals("shared/base.css")&&!local.equals("shared/themes.css")&&!local.equals("core/view.js"))return null;
+  if(!local.equals("index.html")&&!local.equals("assets/vendor/plotly.min.js")&&!local.equals("assets/vendor/qp-icons.js")&&!local.equals("core/icons.js")&&!local.matches("assets/[A-Za-z0-9._-]+")&&!local.equals("core/app.js")&&!local.equals("core/bootstrap.js")&&!local.equals("mobile/mobile.js")&&!local.equals("shared/base.css")&&!local.equals("shared/themes.css")&&!local.equals("core/view.js"))return null;
   String mime=local.endsWith(".html")?"text/html":local.endsWith(".png")?"image/png":local.endsWith(".js")?"application/javascript":local.endsWith(".css")?"text/css":"application/octet-stream";
   try{return new WebResourceResponse(mime,(local.endsWith(".html")||local.endsWith(".js")||local.endsWith(".css"))?"UTF-8":null,getAssets().open("qp-web/"+local));}
   catch(IOException e){return new WebResourceResponse("text/plain","UTF-8",503,"Bundle unavailable",java.util.Collections.emptyMap(),new ByteArrayInputStream("Interface indisponível. Reinstala o APK correto.".getBytes(java.nio.charset.StandardCharsets.UTF_8)));}

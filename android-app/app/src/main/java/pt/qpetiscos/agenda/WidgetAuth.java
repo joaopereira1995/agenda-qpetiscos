@@ -53,8 +53,8 @@ final class WidgetAuth {
     }
     static String account(Context c){try{return appSession(c).getString("uid");}catch(Exception e){return "";}}
     static boolean configured(Context c){try{JSONObject s=load(c);return s!=null&&s.optString("uid").equals(account(c));}catch(Exception e){return false;}}
-    static JSONObject tokenRequest(String grant,JSONObject body)throws Exception{
-        HttpURLConnection h=(HttpURLConnection)new URL(AUTH+grant).openConnection();h.setConnectTimeout(10000);h.setReadTimeout(10000);h.setRequestMethod("POST");h.setInstanceFollowRedirects(false);h.setDoOutput(true);h.setRequestProperty("apikey",WidgetAgenda.KEY);h.setRequestProperty("Content-Type","application/json");
+    static JSONObject tokenRequest(Context c,String grant,JSONObject body)throws Exception{
+        HttpURLConnection h=WidgetAgenda.openConnection(c,new URL(AUTH+grant));h.setConnectTimeout(10000);h.setReadTimeout(10000);h.setRequestMethod("POST");h.setInstanceFollowRedirects(false);h.setDoOutput(true);h.setRequestProperty("apikey",WidgetAgenda.KEY);h.setRequestProperty("Content-Type","application/json");
         try{try(OutputStream out=h.getOutputStream()){out.write(body.toString().getBytes("UTF-8"));}int code=h.getResponseCode();if(code<200||code>=300)throw new HttpError(code,true);
             try(InputStream in=h.getInputStream();ByteArrayOutputStream out=new ByteArrayOutputStream()){byte[] b=new byte[4096];int n;while((n=in.read(b))!=-1)out.write(b,0,n);return new JSONObject(out.toString("UTF-8"));}
         }finally{h.disconnect();}
@@ -67,14 +67,14 @@ final class WidgetAuth {
     }
     // Called only by the widget executor; password is not stored.
     static void connect(Context c,String email,String password)throws Exception{
-        String uid=appSession(c).getString("uid");JSONObject s=normalize(tokenRequest("password",new JSONObject().put("email",email).put("password",password)),uid);
+        String uid=appSession(c).getString("uid");JSONObject s=normalize(tokenRequest(c,"password",new JSONObject().put("email",email).put("password",password)),uid);
         if(!uid.equals(account(c)))throw new IOException("SESSION_REQUIRED");save(c,s);
     }
     static JSONObject session(Context c,boolean force)throws Exception{
         JSONObject app=appSession(c),s=load(c);String uid=app.getString("uid");
         if(s==null||!uid.equals(s.optString("uid")))return app;
         if(force||s.optLong("expires")<=System.currentTimeMillis()/1000+90){
-            try{s=normalize(tokenRequest("refresh_token",new JSONObject().put("refresh_token",s.getString("refresh"))),uid);}
+            try{s=normalize(tokenRequest(c,"refresh_token",new JSONObject().put("refresh_token",s.getString("refresh"))),uid);}
             catch(HttpError e){if(e.code==400||e.code==401||e.code==403)clear(c);throw e;}
             if(!uid.equals(account(c)))throw new IOException("SESSION_REQUIRED");save(c,s);
         }
