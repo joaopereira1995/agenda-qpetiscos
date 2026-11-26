@@ -200,3 +200,32 @@ html.qpDesktop #deskStatsDialog .deskStatEvent p{background:var(--bg);padding:9p
 html.qpDesktop #deskStatsDialog svg{width:17px;height:17px;flex:none;color:var(--accent)}
 }
 @media(min-width:768px) and (max-width:1050px){html.qpDesktop #historyPanel:not(.deskHistClosed) .mgDates{grid-template-columns:1fr 1fr}html.qpDesktop #historyPanel:not(.deskHistClosed) .mgDates button{grid-column:1/-1}html.qpDesktop .deskIdentity{gap:2px}html.qpDesktop #desktopNav #profileButton{gap:4px}}
+
+/* 2.3: compact desktop controls and explicit static-text cursor. */
+@media(min-width:768px){
+html.qpDesktop :is(main,dialog),html.qpDesktop :is(main,dialog) *{caret-color:transparent}
+html.qpDesktop :is(main,dialog) :is(input,textarea,[contenteditable=true]),html.qpDesktop :is(main,dialog) [contenteditable=true] *{caret-color:var(--fg)}
+html.qpDesktop :is(main,dialog) :is(p,span,h1,h2,h3,strong,small,td,th){cursor:default}
+html.qpDesktop :is(main,dialog) button *,html.qpDesktop [data-event] *,html.qpDesktop [data-month-day] *{cursor:pointer}
+html.qpDesktop :is(main,dialog) :is(input:not([type=checkbox]):not([type=radio]),textarea,[contenteditable=true]){cursor:text}
+html.qpDesktop #desktopNav #profileButton svg{width:24px;height:24px;stroke:var(--fg);fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+html.qpDesktop .deskHistToolbar{align-items:center;gap:12px}
+html.qpDesktop .deskHistToolbar #histSearch,html.qpDesktop .deskHistToggle{height:44px;min-height:44px;margin:0;box-sizing:border-box}
+html.qpDesktop .deskHistToggle svg{display:block;flex:none;width:20px;height:20px;fill:none;stroke:currentColor;transform:none}
+html.qpDesktop #historyPanel:not(.deskHistClosed) .mgDates{align-items:end;gap:12px}
+html.qpDesktop #historyPanel .mgDates label{display:grid;gap:6px;margin:0;padding:0}
+html.qpDesktop #historyPanel .mgDates input,html.qpDesktop #historyPanel .mgDates button,html.qpDesktop #historyPanel .mgControl select,html.qpDesktop #histDevice{height:44px;min-height:44px;margin:0;box-sizing:border-box}
+html.qpDesktop #historyPanel .mgDates button{align-self:end;line-height:1.2}
+html.qpDesktop #historyPanel .mgControl{gap:12px;margin:0}
+html.qpDesktop #historyPanel #histDevice{margin:0}
+html.qpDesktop .deskThemeGrid{grid-template-columns:repeat(2,minmax(0,1fr));max-width:none;gap:12px}
+html.qpDesktop .deskThemeGrid button{min-width:0;padding:9px;display:grid;gap:8px;background:var(--bg);color:var(--fg)}
+html.qpDesktop .deskThemeGrid button.active{background:var(--bg);color:var(--fg);border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+html.qpDesktop .deskThemeSample{height:76px;padding:8px;margin:0}
+html.qpDesktop .deskThemeGrid button span{color:inherit}
+html.qpDesktop .deskSettingGroup #themePreview{justify-content:flex-start;gap:12px}
+html.qpDesktop .deskSettingGroup #themePreview small{margin-left:auto}
+html.qpDesktop .deskSettingGroup .setting:has(#minus){display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:10px;align-items:center}
+html.qpDesktop .deskSettingGroup .setting:has(#minus) button{min-width:42px;height:42px;margin:0}
+}
+@media(min-width:1350px){html.qpDesktop .deskThemeGrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
