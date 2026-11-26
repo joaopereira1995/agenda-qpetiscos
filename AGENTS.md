@@ -41,3 +41,5 @@
 - Do not assume production migrations or deployments succeeded. Explicitly communicate outstanding checks and blockers.
 
 - Every delivery requesting compilation or testing must include an actionable interactive validation checklist, with pass/fail/not applicable, regression cases, exact version/commit and a way to report results. Do not mark unexecuted tests as passed.
+
+- Each interactive validation checklist must provide an 'Aprovar todos' control for each test section, preserving individual pass/fail/not applicable controls and accurate progress counts.
