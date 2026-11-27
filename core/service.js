@@ -40,3 +40,80 @@ function svcAlerts(day,seconds){
 const svcClockFormat=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Lisbon',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
 function svcTick(){if(!svcAvailable()||tab!=='service'||searching||document.hidden){if(svcAlertHost)svcAlertHost.hidden=true;return;}const now=svcClockFormat.formatToParts(new Date()),part=k=>now.find(x=>x.type===k).value;$('svcClockHM').textContent=part('hour')+':'+part('minute');$('svcClockSeconds').textContent=':'+part('second');if(svcDay!==localDay()||svcAutoPeriod!==(svcNow()<900?'lunch':'dinner'))renderService();svcAlerts(localDay(),Number(part('hour'))*3600+Number(part('minute'))*60+Number(part('second')));}
 setInterval(svcTick,1000);document.addEventListener('visibilitychange',svcTick);
+
+
+// Dedicated Service display. Fullscreen the document so dialogs and alerts remain visible.
+const svcDisplayRoot=document.documentElement;
+const svcDisplayButton=$('svcFullscreen');
+let svcDisplayMode=false,svcDisplayBusy=false,svcNativeFull=false,svcWakeLock=null,svcWakePending=false,svcWakeGeneration=0,svcWakeAttempted=false;
+const svcDisplayActive=()=>svcAvailable()&&tab==='service'&&!searching&&!document.querySelector('main').hidden;
+const svcFullElement=()=>document.fullscreenElement||document.webkitFullscreenElement||null;
+const svcFullRequest=()=>svcDisplayRoot.requestFullscreen||svcDisplayRoot.webkitRequestFullscreen;
+const svcFullExit=()=>document.exitFullscreen||document.webkitExitFullscreen;
+function svcDisplayPaint(){
+ const active=svcDisplayActive();
+ svcDisplayButton.hidden=!active;
+ svcDisplayRoot.classList.toggle('svcFullscreen',active&&svcDisplayMode);
+ svcDisplayButton.setAttribute('aria-pressed',String(svcDisplayMode));
+ const label=svcDisplayMode?'Sair do ecrã inteiro':'Ativar ecrã inteiro';
+ svcDisplayButton.title=label;svcDisplayButton.setAttribute('aria-label',label);
+ svcDisplayButton.querySelector('path').setAttribute('d',svcDisplayMode?'M8 3v3a2 2 0 0 1-2 2H3m13-5v3a2 2 0 0 0 2 2h3m0 8h-3a2 2 0 0 0-2 2v3M3 16h3a2 2 0 0 1 2 2v3':'M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3m0 8v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3');
+}
+function svcWakeSync(){
+ const wanted=svcDisplayActive()&&!document.hidden;
+ if(!wanted){
+  svcWakeGeneration++;svcWakeAttempted=false;
+  const lock=svcWakeLock;svcWakeLock=null;
+  if(lock)Promise.resolve(lock.release()).catch(()=>{});
+  return;
+ }
+ if(!navigator.wakeLock?.request||svcWakeLock||svcWakePending||svcWakeAttempted)return;
+ svcWakePending=true;svcWakeAttempted=true;const generation=svcWakeGeneration;
+ (async()=>{
+  try{
+   const lock=await navigator.wakeLock.request('screen');
+   if(generation!==svcWakeGeneration||!svcDisplayActive()||document.hidden){await lock.release();return;}
+   svcWakeLock=lock;
+   lock.addEventListener('release',()=>{if(svcWakeLock===lock)svcWakeLock=null;},{once:true});
+  }catch(e){console.debug('Service screen wake lock unavailable',e);}
+  finally{svcWakePending=false;if(generation!==svcWakeGeneration)svcWakeSync();}
+ })();
+}
+async function svcDisplayLeave(){
+ svcDisplayMode=false;svcDisplayPaint();
+ if(svcNativeFull&&svcFullElement()===svcDisplayRoot){
+  const exit=svcFullExit();if(exit)try{await exit.call(document);}catch(e){console.debug('Service fullscreen exit unavailable',e);}
+ }
+ svcNativeFull=false;
+}
+function svcDisplaySync(){
+ if(!svcDisplayActive()&&svcDisplayMode)void svcDisplayLeave();
+ svcDisplayPaint();svcWakeSync();
+}
+svcDisplayButton.onclick=async()=>{
+ if(!svcDisplayActive()||svcDisplayBusy)return;
+ svcDisplayBusy=true;
+ try{
+  if(svcDisplayMode){await svcDisplayLeave();return;}
+  svcDisplayMode=true;svcDisplayPaint();
+  const request=svcFullRequest();
+  if(request&&!svcFullElement()){
+   try{await request.call(svcDisplayRoot);svcNativeFull=svcFullElement()===svcDisplayRoot;}
+   catch(e){console.debug('Using expanded Service layout without browser fullscreen',e);}
+  }
+  if(!svcDisplayActive())await svcDisplayLeave();
+  svcWakeAttempted=false;svcWakeSync();
+ }finally{svcDisplayBusy=false;svcDisplayPaint();}
+};
+function svcFullChanged(){
+ if(svcFullElement()===svcDisplayRoot&&svcDisplayMode)svcNativeFull=true;
+ else if(svcNativeFull){svcNativeFull=false;svcDisplayMode=false;}
+ svcDisplayPaint();
+}
+document.addEventListener('fullscreenchange',svcFullChanged);
+document.addEventListener('webkitfullscreenchange',svcFullChanged);
+document.addEventListener('visibilitychange',()=>{svcWakeAttempted=false;svcDisplaySync();});
+matchMedia('(min-width:768px)').addEventListener('change',svcDisplaySync);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&svcDisplayMode&&!svcNativeFull&&!document.querySelector('dialog[open]'))void svcDisplayLeave();});
+window.addEventListener('pagehide',()=>{const lock=svcWakeLock;svcWakeGeneration++;svcWakeLock=null;svcWakeAttempted=false;if(lock)Promise.resolve(lock.release()).catch(()=>{});});
+window.addEventListener('pageshow',svcDisplaySync);
