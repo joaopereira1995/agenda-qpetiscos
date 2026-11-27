@@ -181,3 +181,15 @@ html:not(.qpDesktop) #week button.active.current,html:not(.qpDesktop) #monthGrid
  #servicePanel .svcState{text-align:left;justify-content:flex-start}
  #servicePanel .svcCardActions .svcPrimary{min-width:0}
 }
+
+/* FIX-003: approved draft confirmation, stacked actions and theme-aware colours. */
+#draftConfirm{width:min(calc(100% - 32px),380px);max-height:calc(100dvh - 32px);margin:auto;padding:20px;border:0;border-radius:20px;background:var(--bg);color:var(--fg);font-size:max(14px,var(--dialog-font,14px));overflow:auto}
+#draftConfirm::backdrop{background:rgba(0,0,0,.40)}
+#draftConfirm .draftConfirmContent{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
+#draftConfirm .draftConfirmContent>svg{width:32px;height:32px;color:var(--accent);flex:none}
+#draftConfirm h2{margin:0;font-size:1.3em;font-weight:700;color:var(--fg)}
+#draftConfirm p{margin:0 0 4px;line-height:1.45;color:var(--fg)}
+#draftConfirm button{width:100%;min-height:44px;padding:12px;border:0;border-radius:12px;font-weight:600;white-space:normal;line-height:1.35}
+#draftConfirm #draftKeep{background:var(--accent);color:var(--accenttext)}
+#draftConfirm #draftDiscard{background:var(--panel);color:#B53939}
+:root[data-theme=night] #draftConfirm #draftDiscard,:root[data-theme=brown] #draftConfirm #draftDiscard,:root[data-theme=lightbrown] #draftConfirm #draftDiscard{color:#FFB4AB}
