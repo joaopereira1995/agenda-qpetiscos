@@ -18,18 +18,18 @@ public class MainActivity extends Activity {
  @JavascriptInterface public void widgetCopy(String text){runOnUiThread(()->{android.content.ClipboardManager clipboard=getSystemService(android.content.ClipboardManager.class);clipboard.setPrimaryClip(android.content.ClipData.newPlainText("Diagnóstico dos widgets",WidgetAgenda.diagnostics(MainActivity.this)));});}
  @JavascriptInterface public void widgetConnect(){runOnUiThread(()->showWidgetLogin());}
  @JavascriptInterface public void widgetClear(){runOnUiThread(()->{widgetEpoch++;setBetaEditing(false);WidgetAgenda.clearSession(MainActivity.this);});}
- @JavascriptInterface public void ready(String color){runOnUiThread(()->{try{int bg=android.graphics.Color.parseColor(color);applySystemTheme(bg);}catch(Exception ignored){}splash.setVisibility(View.GONE);});} @JavascriptInterface public void setTheme(String color){runOnUiThread(()->{try{applySystemTheme(android.graphics.Color.parseColor(color));}catch(Exception ignored){}});} @JavascriptInterface public void requestToken(){runOnUiThread(()->sendFirebaseToken());} @JavascriptInterface public void requestPermission(){runOnUiThread(()->{if(Build.VERSION.SDK_INT>=33&&checkSelfPermission("android.permission.POST_NOTIFICATIONS")!=android.content.pm.PackageManager.PERMISSION_GRANTED)requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"},71);});} @JavascriptInterface public void checkUpdates(){runOnUiThread(()->{if(web.getUrl()!=null&&web.getUrl().startsWith(SITE))checkUpdate(true);});}},"QPetiscosNative");web.setWebViewClient(new WebViewClient(){
+ @JavascriptInterface public void ready(String color){runOnUiThread(()->{try{int bg=android.graphics.Color.parseColor(color);applySystemTheme(bg);}catch(Exception ignored){}splash.setVisibility(View.GONE);if(BuildConfig.QP_BETA)tryShowTestUpdate();});} @JavascriptInterface public void setTheme(String color){runOnUiThread(()->{try{applySystemTheme(android.graphics.Color.parseColor(color));}catch(Exception ignored){}});} @JavascriptInterface public void requestToken(){runOnUiThread(()->sendFirebaseToken());} @JavascriptInterface public void requestPermission(){runOnUiThread(()->{if(Build.VERSION.SDK_INT>=33&&checkSelfPermission("android.permission.POST_NOTIFICATIONS")!=android.content.pm.PackageManager.PERMISSION_GRANTED)requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"},71);});} @JavascriptInterface public void checkUpdates(){runOnUiThread(()->{if(web.getUrl()!=null&&web.getUrl().startsWith(SITE))checkUpdate(true);});}},"QPetiscosNative");web.setWebViewClient(new WebViewClient(){
  @Override public WebResourceResponse shouldInterceptRequest(WebView v,WebResourceRequest r){
   Uri u=r.getUrl();if(BuildConfig.QP_BETA&&"kyzwmaydwokbfmiskhcg.supabase.co".equals(u.getHost()))return new WebResourceResponse("text/plain","UTF-8",403,"Production blocked",java.util.Collections.emptyMap(),new ByteArrayInputStream(new byte[0]));
   if(!"https".equals(u.getScheme())||!"joaopereira1995.github.io".equals(u.getHost()))return null;
   String path=u.getPath(),prefix="/agenda-qpetiscos/";if(path==null||!path.startsWith(prefix))return null;
   String local=path.substring(prefix.length());if(local.isEmpty())local="index.html";
-  if(!local.equals("index.html")&&!local.equals("assets/vendor/plotly.min.js")&&!local.equals("assets/vendor/qp-icons.js")&&!local.equals("core/icons.js")&&!local.matches("assets/[A-Za-z0-9._-]+")&&!local.equals("core/app.js")&&!local.equals("core/bootstrap.js")&&!local.equals("mobile/mobile.js")&&!local.equals("shared/base.css")&&!local.equals("shared/themes.css")&&!local.equals("core/view.js")&&!local.equals("core/reports.js")&&!local.equals("core/service.js"))return null;
+  if(!(BuildConfig.QP_BETA&&(local.equals("core/release.js")||local.equals("core/build-info.js")))&&!local.equals("index.html")&&!local.equals("assets/vendor/plotly.min.js")&&!local.equals("assets/vendor/qp-icons.js")&&!local.equals("core/icons.js")&&!local.matches("assets/[A-Za-z0-9._-]+")&&!local.equals("core/app.js")&&!local.equals("core/bootstrap.js")&&!local.equals("mobile/mobile.js")&&!local.equals("shared/base.css")&&!local.equals("shared/themes.css")&&!local.equals("core/view.js")&&!local.equals("core/reports.js")&&!local.equals("core/service.js"))return null;
   String mime=local.endsWith(".html")?"text/html":local.endsWith(".png")?"image/png":local.endsWith(".js")?"application/javascript":local.endsWith(".css")?"text/css":"application/octet-stream";
   try{return new WebResourceResponse(mime,(local.endsWith(".html")||local.endsWith(".js")||local.endsWith(".css"))?"UTF-8":null,getAssets().open("qp-web/"+local));}
   catch(IOException e){return new WebResourceResponse("text/plain","UTF-8",503,"Bundle unavailable",java.util.Collections.emptyMap(),new ByteArrayInputStream("Interface indisponível. Reinstala o APK correto.".getBytes(java.nio.charset.StandardCharsets.UTF_8)));}
  }
- @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest r){Uri u=r.getUrl();if("https".equals(u.getScheme())&&"joaopereira1995.github.io".equals(u.getHost())&&u.getPath()!=null&&u.getPath().startsWith("/agenda-qpetiscos/"))return false;if("https".equals(u.getScheme()))startActivity(new Intent(Intent.ACTION_VIEW,u));return true;}@Override public void onPageFinished(WebView v,String u){syncWidgetSession();syncSystemTheme();} });web.loadUrl(widgetUrl(getIntent()));new Handler(Looper.getMainLooper()).postDelayed(()->splash.setVisibility(View.GONE),15000);checkUpdate(); WidgetAgenda.schedule(this); handler.post(sync); }
+ @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest r){Uri u=r.getUrl();if("https".equals(u.getScheme())&&"joaopereira1995.github.io".equals(u.getHost())&&u.getPath()!=null&&u.getPath().startsWith("/agenda-qpetiscos/"))return false;if("https".equals(u.getScheme()))startActivity(new Intent(Intent.ACTION_VIEW,u));return true;}@Override public void onPageFinished(WebView v,String u){syncWidgetSession();syncSystemTheme();} });web.loadUrl(widgetUrl(getIntent()));new Handler(Looper.getMainLooper()).postDelayed(()->splash.setVisibility(View.GONE),15000);if(!BuildConfig.QP_BETA)checkUpdate(); WidgetAgenda.schedule(this); handler.post(sync); }
  void applySystemTheme(int bg){uiColor=bg;getSharedPreferences("qp_ui",0).edit().putInt("color",bg).apply();if(Build.VERSION.SDK_INT>=29){getWindow().setStatusBarContrastEnforced(false);getWindow().setNavigationBarContrastEnforced(false);}root.setBackgroundColor(bg);web.setBackgroundColor(bg);getWindow().setStatusBarColor(bg);getWindow().setNavigationBarColor(bg);boolean light=(0.2126*android.graphics.Color.red(bg)+0.7152*android.graphics.Color.green(bg)+0.0722*android.graphics.Color.blue(bg))>150;if(Build.VERSION.SDK_INT>=30){android.view.WindowInsetsController c=getWindow().getInsetsController();if(c!=null){int mask=android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS|android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;c.setSystemBarsAppearance(light?mask:0,mask);}}else{getWindow().getDecorView().setSystemUiVisibility(light?(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR):0);}}
  void syncSystemTheme(){if(web!=null&&web.getUrl()!=null&&web.getUrl().startsWith(SITE))web.evaluateJavascript("(()=>{if(window.QPetiscosNative){const c=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();if(/^#[0-9a-f]{3,8}$/i.test(c)){window.QPetiscosNative.setTheme(c)}}})()",null);}
  String widgetUrl(Intent i){String q=notificationQuery(i);return SITE+"?v="+BuildConfig.VERSION_CODE+(q==null?"":"&"+q);}
@@ -47,13 +47,83 @@ public class MainActivity extends Activity {
   AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Sessão autónoma dos widgets").setMessage("Utiliza a mesma conta da agenda. A palavra-passe não é guardada. Confirma que a conta permite várias sessões em simultâneo.").setView(fields).setNegativeButton("Cancelar",null).setPositiveButton("Ligar",null).create();
   dialog.setOnShowListener(d->dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v->{String e=email.getText().toString().trim(),p=password.getText().toString();if(e.isEmpty()||p.isEmpty())return;password.setText("");dialog.dismiss();Toast.makeText(this,"A configurar sessão…",Toast.LENGTH_SHORT).show();WidgetAgenda.runAsync(()->{String message;try{WidgetAuth.connect(this,e,p);message="Sessão autónoma configurada";}catch(Exception ex){message="Não foi possível ligar: "+WidgetAgenda.issue(ex);}final String result=message;runOnUiThread(()->{if(!isFinishing()&&!isDestroyed()){Toast.makeText(this,result,Toast.LENGTH_LONG).show();web.evaluateJavascript("if(window.qpWidgetDiagRefresh)window.qpWidgetDiagRefresh()",null);}});WidgetAgenda.refreshAll(this);});}));dialog.show();
  }
- @Override protected void onPause(){if(updateDialog!=null&&updateDialog.isShowing())updateDialog.dismiss();if(web!=null)web.evaluateJavascript("if(window.qpSuspendPopups)window.qpSuspendPopups()",null);syncWidgetSession();super.onPause();}
- @Override protected void onResume(){super.onResume();if(web!=null){syncWidgetSession();syncSystemTheme();sendFirebaseToken();}}
- @Override protected void onDestroy(){handler.removeCallbacks(sync);super.onDestroy();}
+ @Override protected void onPause(){testForeground=false;handler.removeCallbacks(testUpdatePoll);if(updateDialog!=null&&updateDialog.isShowing())updateDialog.dismiss();if(web!=null)web.evaluateJavascript("if(window.qpSuspendPopups)window.qpSuspendPopups()",null);syncWidgetSession();super.onPause();}
+ @Override protected void onResume(){super.onResume();if(web!=null){syncWidgetSession();syncSystemTheme();sendFirebaseToken();}if(BuildConfig.QP_BETA){testForeground=true;testPrompted=false;checkTestUpdate(false);handler.removeCallbacks(testUpdatePoll);handler.postDelayed(testUpdatePoll,2000);}}
+ @Override protected void onDestroy(){handler.removeCallbacks(sync);handler.removeCallbacks(testUpdatePoll);testForeground=false;super.onDestroy();}
+
+ private boolean testForeground,testPrompted,testChecking,testShowing;
+ private long testLastCheck;
+ private TestUpdate testPending;
+ private static final String TEST_RELEASES="https://api.github.com/repos/joaopereira1995/agenda-qpetiscos/releases?per_page=100&page=";
+ private static final class TestUpdate{
+  final int build;final String version,notes,url;
+  TestUpdate(int b,String v,String n,String u){build=b;version=v;notes=n;url=u;}
+ }
+ private final Runnable testUpdatePoll=new Runnable(){public void run(){
+  if(!BuildConfig.QP_BETA||!testForeground||isFinishing()||isDestroyed())return;
+  if(android.os.SystemClock.elapsedRealtime()-testLastCheck>=900000L)checkTestUpdate(false);
+  tryShowTestUpdate();handler.postDelayed(this,2000);
+ }};
+ private void checkTestUpdate(boolean manual){
+  if(!BuildConfig.QP_BETA||testChecking||downloading)return;
+  if(manual)testPrompted=false;
+  testChecking=true;testLastCheck=android.os.SystemClock.elapsedRealtime();
+  new Thread(()->{
+   TestUpdate best=null;String failure=null;
+   try{
+    for(int page=1;page<=10;page++){
+     HttpURLConnection c=(HttpURLConnection)new URL(TEST_RELEASES+page).openConnection();
+     c.setConnectTimeout(8000);c.setReadTimeout(8000);c.setRequestProperty("Accept","application/vnd.github+json");c.setRequestProperty("User-Agent","Agenda-QPetiscos-TEST");c.setUseCaches(false);
+     JSONArray releases;
+     try{
+      if(c.getResponseCode()!=200)throw new IOException("HTTP "+c.getResponseCode());
+      ByteArrayOutputStream out=new ByteArrayOutputStream();try(InputStream in=c.getInputStream()){byte[] buf=new byte[4096];int n;while((n=in.read(buf))!=-1){if(out.size()+n>10000000)throw new IOException("Resposta demasiado grande");out.write(buf,0,n);}}
+      releases=new JSONArray(out.toString("UTF-8"));
+     }finally{c.disconnect();}
+     for(int i=0;i<releases.length();i++){
+      JSONObject release=releases.getJSONObject(i);
+      if(release.optBoolean("draft")||!release.optBoolean("prerelease"))continue;
+      String tag=release.optString("tag_name");
+      java.util.regex.Matcher t=java.util.regex.Pattern.compile("android-test-b([0-9]+)-([0-9a-f]{7})").matcher(tag);
+      if(!t.matches())continue;
+      int build;try{build=Integer.parseInt(t.group(1));}catch(NumberFormatException e){continue;}
+      if(build<=BuildConfig.VERSION_CODE||(best!=null&&build<=best.build))continue;
+      JSONArray assets=release.optJSONArray("assets");if(assets==null)continue;
+      for(int k=0;k<assets.length();k++){
+       JSONObject a=assets.getJSONObject(k);String name=a.optString("name");
+       java.util.regex.Matcher m=java.util.regex.Pattern.compile("Agenda-QPetiscos-TEST-v([0-9]+\\.[0-9]+\\.[0-9]+)-b"+build+"-"+t.group(2)+"\\.apk").matcher(name);
+       String url=a.optString("browser_download_url");
+       if(!m.matches()||!a.optString("state").equals("uploaded")||a.optLong("size")<=0||!url.equals("https://github.com/joaopereira1995/agenda-qpetiscos/releases/download/"+tag+"/"+name))continue;
+       best=new TestUpdate(build,m.group(1),release.optString("body",""),url);break;
+      }
+     }
+     if(releases.length()<100)break;
+    }
+   }catch(Exception e){failure=e.toString();android.util.Log.w("QPetiscos","Verificação TEST",e);}
+   final TestUpdate found=best;final String error=failure;
+   runOnUiThread(()->{
+    testChecking=false;if(isFinishing()||isDestroyed())return;
+    if(error==null){testPending=found;if(manual&&found==null)Toast.makeText(this,"Aplicação TEST atualizada",Toast.LENGTH_SHORT).show();}
+    else if(manual)Toast.makeText(this,"Não foi possível verificar atualizações TEST",Toast.LENGTH_LONG).show();
+    tryShowTestUpdate();
+   });
+  }).start();
+ }
+ private void tryShowTestUpdate(){
+  if(!BuildConfig.QP_BETA||!testForeground||testPrompted||testShowing||testPending==null||downloading||web==null||isFinishing()||isDestroyed()||!hasWindowFocus()||(updateDialog!=null&&updateDialog.isShowing()))return;
+  testShowing=true;
+  web.evaluateJavascript("Boolean(window.qpReady && !document.hidden && !document.querySelector('dialog[open]') && !document.querySelector('main').hidden && !document.querySelector('form:focus-within'))",result->{
+   testShowing=false;
+   if(!"true".equals(result)||!testForeground||testPrompted||testPending==null||downloading||isFinishing()||isDestroyed()||!hasWindowFocus())return;
+   TestUpdate u=testPending;testPrompted=true;
+   showUpdateDialog(u.version+" · build "+u.build,u.notes,u.url);
+  });
+ }
+
  private boolean checking, downloading;
  void checkUpdate(){checkUpdate(false);}
  void checkUpdate(boolean manual){
- if(BuildConfig.QP_BETA){if(manual)Toast.makeText(this,"Canal Beta: instalação manual pelo GitHub Actions",Toast.LENGTH_LONG).show();return;}
+ if(BuildConfig.QP_BETA){checkTestUpdate(manual);return;}
  if(checking || downloading)return; checking=true;
  new Thread(()->{try{
  HttpURLConnection c=(HttpURLConnection)new URL("https://api.github.com/repos/joaopereira1995/agenda-qpetiscos/releases/latest").openConnection();
@@ -68,7 +138,7 @@ public class MainActivity extends Activity {
  }
  }catch(Exception e){android.util.Log.w("QPetiscos","Verificação de atualização",e);if(manual)runOnUiThread(()->Toast.makeText(this,"Não foi possível verificar atualizações",Toast.LENGTH_LONG).show());}finally{runOnUiThread(()->checking=false);}}).start();}
  int dip(int n){return Math.round(n*getResources().getDisplayMetrics().density);} android.graphics.drawable.GradientDrawable rounded(int color,int radius){android.graphics.drawable.GradientDrawable d=new android.graphics.drawable.GradientDrawable();d.setColor(color);d.setCornerRadius(dip(radius));return d;} TextView updateText(String value,int size,int color,boolean bold){TextView t=new TextView(this);t.setText(value);t.setTextSize(size);t.setTextColor(color);if(bold)t.setTypeface(android.graphics.Typeface.DEFAULT,android.graphics.Typeface.BOLD);return t;}
- void showUpdateDialog(String tag,String notes,String url){if(isFinishing()||isDestroyed()||(updateDialog!=null&&updateDialog.isShowing()))return;int bg=uiColor,fg=(android.graphics.Color.red(bg)*.2126+android.graphics.Color.green(bg)*.7152+android.graphics.Color.blue(bg)*.0722)>150?0xff402817:0xffffffff;int accent=fg==0xff402817?0xff966039:0xffe5a363;int panel=fg==0xff402817?0xfff4f0ea:bg==0xff402817?0xff5a3d29:bg==0xff966039?0xff80502e:0xff242424;Dialog d=new Dialog(this);d.requestWindowFeature(Window.FEATURE_NO_TITLE);updateDialog=d;LinearLayout l=new LinearLayout(this);l.setOrientation(1);l.setPadding(dip(20),dip(20),dip(20),dip(16));l.setBackground(rounded(bg,20));TextView title=updateText("Nova atualização",22,fg,true);title.setGravity(Gravity.CENTER);l.addView(title);TextView version=updateText("Versão "+tag+" disponível",14,fg,false);version.setGravity(Gravity.CENTER);version.setPadding(0,dip(8),0,dip(16));l.addView(version);if(notes!=null&&!notes.trim().isEmpty()){LinearLayout info=new LinearLayout(this);info.setOrientation(1);info.setPadding(dip(14),dip(12),dip(14),dip(12));info.setBackground(rounded(panel,12));info.addView(updateText("O que há de novo?",16,fg,true));ScrollView sc=new ScrollView(this);TextView body=updateText(notes,14,fg,false);body.setPadding(0,dip(8),0,0);sc.addView(body);int max=Math.min(dip(220),getResources().getDisplayMetrics().heightPixels/3);info.addView(sc,new LinearLayout.LayoutParams(-1,notes.length()>220?max:-2));l.addView(info);}
+ void showUpdateDialog(String tag,String notes,String url){if(isFinishing()||isDestroyed()||(updateDialog!=null&&updateDialog.isShowing()))return;int bg=uiColor,fg=(android.graphics.Color.red(bg)*.2126+android.graphics.Color.green(bg)*.7152+android.graphics.Color.blue(bg)*.0722)>150?0xff402817:0xffffffff;int accent=fg==0xff402817?0xff966039:0xffe5a363;int panel=fg==0xff402817?0xfff4f0ea:bg==0xff402817?0xff5a3d29:bg==0xff966039?0xff80502e:0xff242424;Dialog d=new Dialog(this);d.requestWindowFeature(Window.FEATURE_NO_TITLE);updateDialog=d;LinearLayout l=new LinearLayout(this);l.setOrientation(1);l.setPadding(dip(20),dip(20),dip(20),dip(16));l.setBackground(rounded(bg,20));TextView title=updateText("Nova atualização",22,fg,true);title.setGravity(Gravity.CENTER);l.addView(title);TextView version=updateText(BuildConfig.QP_BETA?"Instalada: "+BuildConfig.VERSION_NAME+" · build "+BuildConfig.VERSION_CODE+"\nDisponível: "+tag:"Versão "+tag+" disponível",14,fg,false);version.setGravity(Gravity.CENTER);version.setPadding(0,dip(8),0,dip(16));l.addView(version);if(notes!=null&&!notes.trim().isEmpty()){LinearLayout info=new LinearLayout(this);info.setOrientation(1);info.setPadding(dip(14),dip(12),dip(14),dip(12));info.setBackground(rounded(panel,12));info.addView(updateText("O que há de novo?",16,fg,true));ScrollView sc=new ScrollView(this);TextView body=updateText(notes,14,fg,false);body.setPadding(0,dip(8),0,0);sc.addView(body);int max=Math.min(dip(220),getResources().getDisplayMetrics().heightPixels/3);info.addView(sc,new LinearLayout.LayoutParams(-1,notes.length()>220?max:-2));l.addView(info);}
  Button update=new Button(this);update.setAllCaps(false);update.setText("Atualizar agora");update.setTextColor(fg==0xff402817?0xffffffff:0xff402817);update.setBackground(rounded(accent,12));LinearLayout.LayoutParams up=new LinearLayout.LayoutParams(-1,dip(48));up.topMargin=dip(16);l.addView(update,up);update.setOnClickListener(v->{d.dismiss();downloadUpdate(url);});Button later=new Button(this);later.setAllCaps(false);later.setText("Mais tarde");later.setTextColor(fg);later.setBackgroundColor(android.graphics.Color.TRANSPARENT);l.addView(later,new LinearLayout.LayoutParams(-1,dip(44)));later.setOnClickListener(v->d.dismiss());d.setContentView(l);d.setCanceledOnTouchOutside(true);d.show();if(d.getWindow()!=null){d.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));d.getWindow().setLayout(Math.min(getResources().getDisplayMetrics().widthPixels-dip(32),dip(440)),-2);}}
  private void downloadUpdate(String url){
  if(downloading)return;downloading=true;

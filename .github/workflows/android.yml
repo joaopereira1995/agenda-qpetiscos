@@ -15,6 +15,10 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-24.04
+    outputs:
+      apk_name: ${{ steps.apk.outputs.name }}
+      version: ${{ steps.apk.outputs.version }}
+      build: ${{ steps.apk.outputs.build }}
 
     steps:
       - uses: actions/checkout@v4
@@ -87,6 +91,7 @@ jobs:
           printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/agenda-qpetiscos.jks"
 
       - name: Obter versão do APK
+        id: apk
         shell: bash
         run: |
           APK=android-app/app/build/outputs/apk/release/app-release-unsigned.apk
@@ -100,6 +105,9 @@ jobs:
             NAME="Agenda-QPetiscos-TEST-v$VERSION-b$BUILD-${GITHUB_SHA:0:7}"
           fi
           echo "APK_NAME=$NAME" >> "$GITHUB_ENV"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "build=$BUILD" >> "$GITHUB_OUTPUT"
 
       - name: Assinar APK
         env:
@@ -136,3 +144,51 @@ jobs:
       - name: Limpar chave de assinatura
         if: always()
         run: rm -f "$RUNNER_TEMP/agenda-qpetiscos.jks" android-app/app/google-services.json
+
+  publish-test:
+    if: github.ref == 'refs/heads/develop'
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.build.outputs.apk_name }}
+          path: signed
+      - name: Publicar atualização Android TEST
+        env:
+          GH_TOKEN: ${{ github.token }}
+          APK_NAME: ${{ needs.build.outputs.apk_name }}
+          VERSION: ${{ needs.build.outputs.version }}
+          BUILD: ${{ needs.build.outputs.build }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$GITHUB_REF" == refs/heads/develop ]]
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ && "$BUILD" =~ ^[0-9]+$ ]]
+          [[ "$APK_NAME" == "Agenda-QPetiscos-TEST-v$VERSION-b$BUILD-${GITHUB_SHA:0:7}" ]]
+          test -s "signed/$APK_NAME.apk"
+          TAG="android-test-b$BUILD-${GITHUB_SHA:0:7}"
+          node - <<'JS' > "$RUNNER_TEMP/test-notes.txt"
+          const fs=require('fs'),vm=require('vm');
+          const context={window:{}};
+          vm.runInNewContext(fs.readFileSync('core/release.js','utf8'),context,{timeout:1000});
+          const r=context.window.qpRelease;
+          if(r.version!==process.env.VERSION||!Array.isArray(r.changes)||!r.changes.length||!r.changes.every(x=>typeof x==='string')) throw Error('Changelog inválido');
+          console.log(r.changes.map(x=>'• '+x).join('\n'));
+          JS
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft,assets,isPrerelease > "$RUNNER_TEMP/release.json" 2>/dev/null; then
+            if jq -e --arg name "$APK_NAME.apk" '.isDraft == false and .isPrerelease == true and any(.assets[]; .name == $name)' "$RUNNER_TEMP/release.json" >/dev/null; then
+              echo "Build TEST já publicada"; exit 0
+            fi
+            jq -e '.isDraft == true and .isPrerelease == true' "$RUNNER_TEMP/release.json" >/dev/null
+          else
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "Android TEST $VERSION (build $BUILD)" --notes-file "$RUNNER_TEMP/test-notes.txt" --prerelease --draft --latest=false
+          fi
+          gh release upload "$TAG" "signed/$APK_NAME.apk" --repo "$GITHUB_REPOSITORY" --clobber
+          gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --draft=false --prerelease --latest=false
