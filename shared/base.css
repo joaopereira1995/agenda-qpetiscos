@@ -136,3 +136,9 @@ html.qpDesktop #servicePanel .svcHeader h2{display:none}#servicePanel .svcHeader
 /* Service takeaway alerts overlay the dashboard without affecting its layout. */
 #svcAlerts{position:fixed;top:8px;right:8px;z-index:18;width:min(340px,calc(100vw - 32px));display:grid;gap:8px;max-height:55vh;overflow:auto;pointer-events:none}#svcAlerts[hidden],#svcAlerts:empty{display:none!important}#svcAlerts article{pointer-events:auto;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-left:5px solid #D49A46;border-radius:9px;padding:12px;box-shadow:0 6px 24px #0003;display:grid;gap:7px}#svcAlerts .svcAlertHead{display:flex;align-items:center;gap:8px}#svcAlerts .svcAlertHead>svg{color:var(--accent);width:20px;height:20px;flex:none}#svcAlerts .svcAlertHead button{margin-left:auto;background:transparent;color:var(--fg);padding:4px;display:grid;place-items:center}#svcAlerts .svcAlertHead button svg{width:18px;height:18px}#svcAlerts small{color:var(--sub)}html.qp-test #svcAlerts{top:30px}
 #svcAlerts article{animation:svcAlertSlideIn .22s ease-out both}@keyframes svcAlertSlideIn{from{transform:translateY(-16px);opacity:0}to{transform:translateY(0);opacity:1}}@media(prefers-reduced-motion:reduce){#svcAlerts article{animation:none}}
+
+/* Mobile agenda/calendar controls: use theme surfaces, not white selection fills. */
+html:not(.qpDesktop) #agendaControls nav button,html:not(.qpDesktop) #calendarControls nav button,html:not(.qpDesktop) #today{background:transparent;color:var(--fg)}
+html:not(.qpDesktop) #week button.active,html:not(.qpDesktop) #monthGrid button.active{background:var(--accent)!important;color:var(--accenttext)!important}
+html:not(.qpDesktop) #week button.active small{color:var(--accenttext)}
+html:not(.qpDesktop) #week button.active.current,html:not(.qpDesktop) #monthGrid button.active.current{outline-color:var(--accenttext)}
