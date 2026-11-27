@@ -20,8 +20,8 @@ android {
         buildConfigField 'String', 'QP_SUPABASE_KEY', '"' + (qpBeta.get() ? 'sb_publishable_CAB6yO8JQjeP4tS52-2OiQ_uBYnmkGK' : 'sb_publishable_Ko1iv1CWVi693R9_-xwNvg_5auNwzAy') + '"'
         minSdk 26
         targetSdk 35
-        versionCode = 926
-        versionName = '0.10.0'
+        versionCode = 927
+        versionName = '0.10.1'
         buildConfigField 'boolean', 'QP_BETA', qpBeta.get().toString()
     }
 
