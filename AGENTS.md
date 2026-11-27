@@ -10,7 +10,7 @@
 - Update version metadata consistently for feature releases, including Android versionCode/versionName and visible version/changelog where applicable. Documentation-only commits need no version bump.
 - No secrets, tokens, service-account keys, signing material or personal restaurant data in commits or logs. Use existing secrets and configuration.
 - Do not create, edit or delete real reservations, takeaways, notes or tasks for testing. Beta uses isolated TEST Supabase and Firebase; never connect TEST clients to production. Use mocks or isolated test data/environments.
-- Database migrations must be additive/backward-compatible where possible, reviewed separately, and supplied with validation and rollback guidance. Never execute production SQL or modify Edge Functions without explicit authorization. Preserve existing stable clients and notification behavior.
+- Database migrations must be additive/backward-compatible where possible, reviewed separately, and supplied with validation and rollback guidance. Preserve existing stable clients and notification behavior. Never execute production SQL or modify production Edge Functions. TEST Edge Function changes require explicit authorization.
 
 ## Architecture
 - Inspect existing structure before implementation: index.html, core/, shared/, mobile/, desktop/, assets/, android-app/, .github/. Reuse existing helpers and components rather than duplicating them.
@@ -53,3 +53,12 @@
 - Before declaring a UI delivery ready, capture actual rendered screenshots at the target viewport, mobile and all themes, compare with the approved reference, and fix discrepancies. If rendering/build tools are unavailable, explicitly flag visual QA as blocked, do not claim visual acceptance or release readiness. Static checks do not replace screenshots. Include exact commit title, description, SHA and outstanding tests in delivery.
 
 - Mobile navigation is strictly Agenda / Calendário / Novo / Eventos / Mais. Serviço and Relatórios are wide Web only; never add them to mobile navigation or swipe routes without explicit approval.
+
+
+## Supabase TEST ownership and database workflow
+- The assistant prepares, executes and validates SQL directly in the isolated TEST project for approved development work, including schema changes, functions, triggers, RLS, grants and SQL tests. The owner performs backups when requested; do not require the owner to copy or execute routine TEST SQL.
+- Hard allowlist: TEST project `agenda-qpetiscos-test`, ref `ooctwbyhlpifmldcbvzi`. Verify the target project identity before every database operation. Never query, mutate, migrate, deploy to or otherwise operate on PROD project `kyzwmaydwokbfmiskhcg`. If identity or isolation is uncertain, stop. Do not assume connector permissions enforce this restriction; use TEST-only credentials wherever possible.
+- Before changes, inspect current schema, dependencies, permissions and migration history. Prepare versioned SQL, validation and rollback guidance. Request a backup when risk warrants it and wait for owner confirmation before proceeding. Destructive operations, restores and irreversible changes require explicit authorization.
+- Execute approved TEST SQL with transactions where supported; verify actual results, RLS, grants, relevant regressions and security advisors. Use isolated synthetic data and avoid real restaurant records. Report actual results, errors and outstanding checks; never claim an unexecuted test passed.
+- Keep migrations and validation SQL in develop, in the same atomic repository commit as related code. Do not reapply already executed migrations blindly; reconcile migration history and ensure CI cannot target PROD. Database execution and Git commits are separate transactions: report any partial failure and reconcile before release.
+- The owner alone executes production migrations and controls main/PROD. Supply reviewed production SQL and validation/rollback instructions when needed. Never store database credentials in repository files or logs.
