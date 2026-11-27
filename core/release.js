@@ -1,1 +1,1 @@
-window.qpRelease={version:"0.10.2",changes:["Informações da versão e diagnóstico da ligação nas Definições.","Identificação da compilação Android e novidades da versão atualizadas."]};
+window.qpRelease={version:"0.10.3",changes:["FIX-001: Rascunhos de reservas e takeaways guardados neste dispositivo e recuperados após interrupções.","FIX-002: Serviço mantém duas colunas, com cartões adaptáveis e scroll independente sem cortes de informação."]};

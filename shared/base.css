@@ -148,3 +148,36 @@ html:not(.qpDesktop) #week button.active.current,html:not(.qpDesktop) #monthGrid
 #settingsPanel .qpInfoCard{background:var(--panel);border:0;border-radius:12px;padding:20px;margin:0;color:var(--fg)}#settingsPanel .qpInfoHeading{display:flex;align-items:center;gap:8px;font-size:1.15em;font-weight:700;list-style:none;cursor:default}#settingsPanel summary.qpInfoHeading{cursor:pointer}#settingsPanel summary.qpInfoHeading::-webkit-details-marker{display:none}#settingsPanel .qpInfoHeading svg{width:18px;height:18px;color:var(--accent);flex:none}#settingsPanel .qpInfoHeading svg:last-child:not(:first-child){margin-left:auto}#settingsPanel details[open] .qpInfoHeading svg:last-child:not(:first-child){transform:rotate(180deg)}#settingsPanel .qpInfoCard dl{gap:0;margin:8px 0 0}#settingsPanel .qpInfoCard dt,#settingsPanel .qpInfoCard dd{padding:7px 0;border-bottom:1px solid var(--line);font-size:1em}#settingsPanel .qpInfoCard dt:nth-last-child(2),#settingsPanel .qpInfoCard dd:last-child{border-bottom:0}#settingsPanel .qpInfoCard dd svg{width:15px;height:15px;vertical-align:middle;margin-right:5px}#settingsPanel .qpInfoGood svg{color:#33965a}#settingsPanel .qpInfoBad svg{color:#dc5656}#settingsPanel .qpInfoPending svg{color:#d39a39}#settingsPanel #qpCopyDiagnostic,#settingsPanel #updateCheck{display:flex;align-items:center;justify-content:center;gap:8px}#settingsPanel #qpCopyDiagnostic svg,#settingsPanel #updateCheck svg{width:16px;height:16px}#settingsPanel #updateResult:empty{display:none}#settingsPanel #qpPublicChanges{margin:8px 0 0;font-size:1em}
 
 @media(max-width:767px){#settingsPanel .qpInfoCard{padding:12px}}
+
+/* FIX-002: both service columns stay visible at every supported wide-web viewport.
+   Keep the cards at their natural height; scroll their column instead of shrinking them. */
+@media(min-width:768px){
+ #servicePanel{height:var(--svc-available-height,calc(100dvh - 150px));min-height:360px;display:grid;grid-template-rows:auto auto auto minmax(0,1fr) auto;overflow:visible}
+ #servicePanel:has(#svcMessage[hidden]){grid-template-rows:auto auto minmax(0,1fr) auto}
+ #servicePanel .svcMetrics{grid-template-columns:repeat(4,minmax(0,1fr))}
+ #servicePanel .svcMetrics>div{min-width:0;height:auto;align-items:center}
+ #servicePanel .svcColumns{grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(8px,1vw,16px);min-height:0;overflow:visible}
+ #servicePanel .svcColumn{display:grid;grid-template-rows:auto minmax(0,1fr);min-width:0;min-height:0;container-type:inline-size}
+ #servicePanel .svcColumn+.svcColumn{border-left:1px solid var(--line);padding-left:clamp(6px,1vw,12px)}
+ #servicePanel .svcScroll{min-height:0;min-width:0;overflow-y:auto;overscroll-behavior:contain}
+ #servicePanel .svcScroll>*{flex:0 0 auto;min-width:0;max-width:100%}
+ #servicePanel .svcCard{height:auto;min-height:96px;align-items:start;grid-template-columns:minmax(0,1fr) minmax(0,max-content)}
+ #servicePanel .svcCardInfo,#servicePanel .svcCardActions,#servicePanel .svcCardTitle,#servicePanel .svcState,#servicePanel .svcCardActions>div{min-width:0;max-width:100%}
+ #servicePanel :is(.svcNotes,.svcCardTitle,.svcState,.svcCompleted,.svcColumn h3,.svcCardActions button){overflow-wrap:anywhere;white-space:normal;text-overflow:clip}
+ #servicePanel .svcNotes{white-space:pre-wrap;overflow:visible;max-height:none}
+ #servicePanel .svcCardActions button{max-width:100%}
+ #servicePanel .svcState svg,#servicePanel .svcCompleted svg{flex-shrink:0}
+ #servicePanel .svcCompleted{height:auto;gap:4px;text-align:left}
+ #servicePanel .svcCompleted>span{min-width:0;white-space:normal}
+}
+@media(min-width:768px) and (max-width:1200px){
+ #servicePanel .svcMetrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #appHeader.svcActiveHeader{grid-template-columns:minmax(0,1fr) auto auto}
+}
+@container (max-width:390px){
+ #servicePanel .svcCard{grid-template-columns:minmax(0,1fr);padding:10px;gap:8px}
+ #servicePanel .svcCardActions{align-items:flex-start;gap:6px}
+ #servicePanel .svcCardActions>div{justify-content:flex-start;width:100%}
+ #servicePanel .svcState{text-align:left;justify-content:flex-start}
+ #servicePanel .svcCardActions .svcPrimary{min-width:0}
+}

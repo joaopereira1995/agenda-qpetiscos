@@ -260,3 +260,9 @@ html.qpDesktop #reportsPanel .reportKpis{grid-template-columns:repeat(4,minmax(0
 @media(min-width:768px) and (orientation:portrait){
  html.qpDesktop.svcFullscreen #servicePanel{height:auto;min-height:calc(100dvh - 92px)}
 }
+
+/* FIX-002: use the actual available height in normal and expanded Service. */
+@media(min-width:768px){
+ html.qpDesktop main:has(#servicePanel:not([hidden])){padding-bottom:12px}
+ html.qpDesktop #servicePanel:not([hidden]),html.qpDesktop.svcFullscreen #servicePanel:not([hidden]),html.qpDesktop.qp-test.svcFullscreen #servicePanel:not([hidden]){height:var(--svc-available-height,calc(100dvh - 150px));min-height:360px;margin-bottom:0}
+}
