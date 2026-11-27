@@ -43,3 +43,9 @@
 - Every delivery requesting compilation or testing must include an actionable interactive validation checklist, with pass/fail/not applicable, regression cases, exact version/commit and a way to report results. Do not mark unexecuted tests as passed.
 
 - Each interactive validation checklist must provide an 'Aprovar todos' control for each test section, preserving individual pass/fail/not applicable controls and accurate progress counts.
+
+## Mandatory visual acceptance gate
+- Approved wireframes are binding implementation references. Before any UI feature commit, compare the actual rendered interface against the approved design: hierarchy, titles (no duplicates), all icons, labels, spacing, alignment, colors, controls, empty states and responsive layout. Do not silently substitute or omit elements.
+- Use the existing Lucide icon pipeline. Every new icon key must be mapped in tools/icon-map.json and verified against the generated icon bundle; prohibit Unicode/emoji substitutes and silent fallback icons in new features.
+- Service reference: tablet 12.4-inch landscape 2800×1752 (also test logical viewport 1400×876), sidebar Service directly below Agenda with concierge-bell icon, single title, compact KPI row (at most two rows), Reservations left and Takeaways right, independent scrolling, visible notes, state/action icons, collapsed completed sections, upper-right takeaway alert overlay. Portrait/mobile single column. Preserve all four themes.
+- Before declaring a UI delivery ready, capture actual rendered screenshots at the target viewport, mobile and all themes, compare with the approved reference, and fix discrepancies. If rendering/build tools are unavailable, explicitly flag visual QA as blocked, do not claim visual acceptance or release readiness. Static checks do not replace screenshots. Include exact commit title, description, SHA and outstanding tests in delivery.
