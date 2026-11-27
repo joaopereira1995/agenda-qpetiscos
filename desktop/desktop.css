@@ -244,3 +244,19 @@ html.qpDesktop #reportsPanel .reportKpis{grid-template-columns:repeat(4,minmax(0
 
 /* Desktop header rules must not override the approved Service grid. */
 @media(min-width:768px){html.qpDesktop #appHeader.svcActiveHeader{display:grid!important;min-height:0;margin-bottom:10px;padding:8px 0 10px}html.qpDesktop #appHeader.svcActiveHeader #pageTitle{font-size:25px!important;letter-spacing:0}html.qpDesktop #appHeader.svcActiveHeader .headerActions{order:0}html.qpDesktop #appHeader.svcActiveHeader .qpHeaderLeft{display:none!important}}
+
+/* Dedicated Service display, also available as expanded layout when fullscreen is denied. */
+@media(min-width:768px){
+ html.qpDesktop.svcFullscreen{--deskWidth:0px}
+ html.qpDesktop.svcFullscreen #desktopNav{display:none!important}
+ html.qpDesktop.svcFullscreen main{margin:0;max-width:none;width:100%;padding:12px clamp(12px,2vw,28px) 12px;min-height:100dvh}
+ html.qpDesktop.svcFullscreen #servicePanel{height:calc(100dvh - 92px)}
+ html.qpDesktop.qp-test.svcFullscreen #servicePanel{height:calc(100dvh - 114px)}
+ html.qpDesktop.svcFullscreen #svcAlerts{right:12px}
+ #appHeader.svcActiveHeader #svcFullscreen{display:inline-grid;place-items:center;min-width:40px;min-height:40px}
+ #appHeader.svcActiveHeader #svcFullscreen svg{color:var(--accent)}
+ #appHeader.svcActiveHeader #svcFullscreen[hidden]{display:none!important}
+}
+@media(min-width:768px) and (orientation:portrait){
+ html.qpDesktop.svcFullscreen #servicePanel{height:auto;min-height:calc(100dvh - 92px)}
+}
