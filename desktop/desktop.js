@@ -101,9 +101,6 @@ profile.title='Conta e dispositivo';const mobileProfileClick=profile.onclick;pro
 const deskIdentity=document.createElement('div');deskIdentity.className='deskIdentity';deskNav.querySelector('.deskBrandButton').after(deskIdentity);
 function placeIdentity(){if(deskOn()){deskIdentity.append(profile,noteShortcut);}else if(profile.parentElement!==headerLeft){headerLeft.append(profile,noteShortcut);}}
 placeIdentity();deskMedia.addEventListener('change',placeIdentity);
-const monthHeading=$('monthTitle');monthHeading.setAttribute('tabindex','0');monthHeading.setAttribute('role','button');monthHeading.title='Voltar ao dia de hoje';
-function deskToday(){if(!deskOn())return;selected=today();monthCursor=parse(selected);render()}
-monthHeading.addEventListener('click',deskToday);monthHeading.addEventListener('keydown',e=>{if(deskOn()&&(e.key==='Enter'||e.key===' ')){e.preventDefault();deskToday()}});
 const histSearch=$('histSearch'),histToolbar=document.createElement('div'),histToggle=document.createElement('button');histToolbar.className='deskHistToolbar';histToggle.className='deskHistToggle';histToggle.type='button';histToggle.innerHTML=qi('filters')+'<span>Filtros</span>';histToggle.setAttribute('aria-expanded','false');histSearch.before(histToolbar);histToolbar.append(histSearch,histToggle);function placeHistToolbar(){if(deskOn()){if(!histToolbar.isConnected)histSearch.before(histToolbar);histToolbar.append(histSearch,histToggle)}else if(histToolbar.isConnected){histToolbar.before(histSearch);histToolbar.remove()}}placeHistToolbar();deskMedia.addEventListener('change',placeHistToolbar);const historyPanel=$('historyPanel');historyPanel.classList.add('deskHistClosed');histToggle.onclick=()=>{const closed=historyPanel.classList.toggle('deskHistClosed');histToggle.setAttribute('aria-expanded',String(!closed))};
 
 }
