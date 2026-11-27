@@ -34,7 +34,7 @@ function svcAlerts(day,seconds){
  const eligible=events.filter(e=>svcAlertEligible(e,day,seconds));
  for(const card of [...svcAlertHost.children])if(!eligible.some(e=>e.id===card.dataset.eventId))card.remove();
  for(const e of eligible){if(svcAlertSeen.has(e.id))continue;svcAlertSeen.add(e.id);try{qpStorage.setItem('svc-alerts:'+device.id+':'+day,JSON.stringify([...svcAlertSeen]));}catch{}
- const card=document.createElement('article');card.dataset.eventId=e.id;card.innerHTML='<div class="svcAlertHead">'+qi('clock')+'<strong>Takeaway a sair</strong><button type="button" aria-label="Fechar aviso">'+qi('close')+'</button></div><b>'+esc(e.time)+' · '+esc(e.name)+'</b><small>Entrega dentro de 5 minutos</small>';card.querySelector('button').onclick=()=>card.remove();svcAlertHost.append(card);}
+ const card=document.createElement('article');card.dataset.eventId=e.id;card.innerHTML='<div class="svcAlertHead">'+qi('clock')+'<strong>Takeaway a sair</strong><button type="button" aria-label="Fechar aviso">'+qi('close')+'</button></div><b>'+esc(e.time)+' · '+esc(e.name)+'</b><small>Entrega dentro de 5 minutos</small>';card.querySelector('button').onclick=()=>card.remove();svcAlertHost.append(card);setTimeout(()=>card.remove(),5000);}
 }
 
 const svcClockFormat=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Lisbon',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
