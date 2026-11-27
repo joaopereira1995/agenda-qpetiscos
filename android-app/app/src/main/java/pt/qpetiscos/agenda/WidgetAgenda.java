@@ -1,4 +1,5 @@
 package pt.qpetiscos.agenda;
+import android.view.View;
 import android.app.*;import android.appwidget.*;import android.app.job.*;import android.content.*;import android.graphics.Color;import android.net.Uri;import android.widget.RemoteViews;import org.json.*;import java.net.*;import java.io.*;import java.time.*;import java.util.concurrent.*;
 public class WidgetAgenda extends AppWidgetProvider {
  static final String BASE=BuildConfig.QP_SUPABASE_URL+"/rest/v1/events", KEY=BuildConfig.QP_SUPABASE_KEY;
