@@ -193,3 +193,34 @@ html:not(.qpDesktop) #week button.active.current,html:not(.qpDesktop) #monthGrid
 #draftConfirm #draftKeep{background:var(--accent);color:var(--accenttext)}
 #draftConfirm #draftDiscard{background:var(--panel);color:#B53939}
 :root[data-theme=night] #draftConfirm #draftDiscard,:root[data-theme=brown] #draftConfirm #draftDiscard,:root[data-theme=lightbrown] #draftConfirm #draftDiscard{color:#FFB4AB}
+
+/* TEST only: application settings, update status and release history. */
+html.qp-test #settingsPanel .qpInfoCard{margin:0 0 12px;padding:16px;border-radius:16px}
+html.qp-test #settingsPanel #qpVersionHero{display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 0;border-bottom:1px solid var(--line);margin-bottom:8px}
+html.qp-test #qpVersionHero>strong{font-size:2em;line-height:1.15;color:var(--fg)}
+html.qp-test #qpVersionHero>small,#qpReleaseCaption{color:var(--sub)}
+html.qp-test .qpTestPill{background:#FFC107;color:#402817;border-radius:20px;padding:4px 10px;font-size:.8em;font-weight:700}
+html.qp-test #settingsPanel .qpInfoCard dl{grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:0 8px}
+html.qp-test #settingsPanel .qpInfoCard dt{color:var(--sub)}
+html.qp-test #qpSystemFields dt svg{width:16px;height:16px;vertical-align:middle;margin-right:6px;color:var(--accent)}
+html.qp-test #qpSystemFields dd.qpInfoGood,html.qp-test #qpUpdateState.qpInfoGood{color:#267A45}
+html.qp-test[data-theme=night] #qpSystemFields dd.qpInfoGood,html.qp-test[data-theme=brown] #qpSystemFields dd.qpInfoGood,html.qp-test[data-theme=lightbrown] #qpSystemFields dd.qpInfoGood,html.qp-test:not([data-theme=white]) #qpUpdateState.qpInfoGood{color:#9BE4B1}
+html.qp-test #qpDiagnosticSlot{margin-top:12px}
+html.qp-test #settingsPanel #qpCopyDiagnostic{background:var(--bg);border:1px solid var(--line);border-radius:12px;min-height:44px;width:100%;margin:0}
+html.qp-test #settingsPanel #updateCheck{background:var(--accent);color:var(--accenttext);font-weight:600;min-height:48px;width:100%;border:0;border-radius:12px;margin:0}
+html.qp-test #qpUpdateState{display:flex;align-items:center;gap:8px;margin:12px 0;overflow-wrap:anywhere}
+html.qp-test #qpUpdateState svg{width:18px;height:18px;flex:none}
+html.qp-test #qpReleaseCaption{margin:10px 0;border-bottom:1px solid var(--line);padding-bottom:10px;font-size:.9em}
+html.qp-test .qpReleaseTopics{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:10px}
+html.qp-test .qpReleaseTopics li{display:flex;align-items:flex-start;gap:8px;line-height:1.45;overflow-wrap:anywhere}
+html.qp-test .qpReleaseTopics svg{width:16px;height:16px;flex:none;color:var(--accent);margin-top:2px}
+html.qp-test #qpHistoryList{display:grid;gap:8px;margin-top:12px}
+html.qp-test .qpHistoryEntry{background:var(--bg);padding:12px;border-radius:12px}
+html.qp-test .qpHistoryEntry summary{display:flex;align-items:center;gap:8px;list-style:none;cursor:pointer}
+html.qp-test .qpHistoryEntry summary::-webkit-details-marker{display:none}
+html.qp-test .qpHistoryVersion{flex:1;min-width:0}
+html.qp-test .qpHistoryEntry summary>svg{width:18px;height:18px;color:var(--accent);flex:none}
+html.qp-test .qpHistoryEntry[open] summary>svg{transform:rotate(180deg)}
+html.qp-test .qpHistoryEntry[open] .qpReleaseTopics{border-top:1px solid var(--line);padding-top:10px}
+html.qp-test .qpInstalled{font-size:.8em;color:var(--accent);font-weight:700}
+html.qp-test .qpHistoryDate{margin-top:8px;color:var(--sub)}

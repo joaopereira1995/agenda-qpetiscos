@@ -50,5 +50,7 @@
   "chef": "chef-hat",
   "packageCheck": "package-check",
   "activity": "activity",
-  "fileText": "file-text"
+  "fileText": "file-text",
+  "wifiOn": "wifi",
+  "database": "database"
 }

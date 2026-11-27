@@ -7,6 +7,7 @@ public class MainActivity extends Activity {
  @Override public void onCreate(Bundle b){super.onCreate(b);AgendaMessagingService.channel(this);root=new FrameLayout(this);web=new WebView(this);root.addView(web,new FrameLayout.LayoutParams(-1,-1));splash=new ImageView(this);splash.setBackgroundColor(-1);splash.setImageResource(R.drawable.splash_logo);splash.setScaleType(ImageView.ScaleType.CENTER_INSIDE);root.addView(splash,new FrameLayout.LayoutParams(-1,-1));if(Build.VERSION.SDK_INT>=30)getWindow().setDecorFitsSystemWindows(false);setContentView(root);root.setOnApplyWindowInsetsListener((v,insets)->{if(Build.VERSION.SDK_INT>=30){android.graphics.Insets bars=insets.getInsets(android.view.WindowInsets.Type.systemBars()|android.view.WindowInsets.Type.displayCutout());android.graphics.Insets ime=insets.getInsets(android.view.WindowInsets.Type.ime());v.setPadding(bars.left,bars.top,bars.right,Math.max(bars.bottom,ime.bottom));return android.view.WindowInsets.CONSUMED;}return insets;});root.requestApplyInsets();applySystemTheme(getSharedPreferences("qp_ui",0).getInt("color",android.graphics.Color.WHITE));
  if(getSharedPreferences("qp_ui",0).getInt("web_cache_version",0)!=BuildConfig.VERSION_CODE){web.clearCache(true);getSharedPreferences("qp_ui",0).edit().putInt("web_cache_version",BuildConfig.VERSION_CODE).apply();}web.getSettings().setJavaScriptEnabled(true);web.getSettings().setDomStorageEnabled(true);web.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);web.getSettings().setAllowFileAccess(false);web.getSettings().setAllowContentAccess(false);web.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);android.webkit.CookieManager.getInstance().setAcceptCookie(true);
  web.addJavascriptInterface(new Object(){@JavascriptInterface public String appMetadata(){org.json.JSONObject j=new org.json.JSONObject();try{j.put("build",BuildConfig.VERSION_CODE);j.put("sha",BuildConfig.QP_BUILD_SHA);j.put("date",BuildConfig.QP_BUILD_DATE);j.put("model",android.os.Build.MANUFACTURER+" "+android.os.Build.MODEL);j.put("android",android.os.Build.VERSION.RELEASE);}catch(org.json.JSONException ignored){}return j.toString();}
+ @JavascriptInterface public String testUpdateMetadata(){return BuildConfig.QP_BETA?getSharedPreferences("qp_test_updates",0).getString("metadata","{}"):"{}";}
  @JavascriptInterface public void copyAppDiagnostic(String value){runOnUiThread(()->{android.content.ClipboardManager c=getSystemService(android.content.ClipboardManager.class);c.setPrimaryClip(android.content.ClipData.newPlainText("Diagnóstico",value));});}
  @JavascriptInterface public boolean isBeta(){return BuildConfig.QP_BETA;}
  @JavascriptInterface public void exportReport(String name,String mime,String data,boolean share){runOnUiThread(()->{try{if(!name.matches("QPetiscos-[0-9-]+\\.pdf")||!"application/pdf".equals(mime)||data.length()>24000000)throw new java.io.IOException("Invalid report");java.io.File dir=new java.io.File(getCacheDir(),"reports");dir.mkdirs();java.io.File file=new java.io.File(dir,name);try(java.io.FileOutputStream out=new java.io.FileOutputStream(file)){out.write(android.util.Base64.decode(data,android.util.Base64.DEFAULT));}android.net.Uri uri=android.net.Uri.parse("content://"+getPackageName()+".reports/"+name);android.content.Intent intent=new android.content.Intent(android.content.Intent.ACTION_SEND);intent.setType(mime);intent.putExtra(android.content.Intent.EXTRA_STREAM,uri);intent.setClipData(android.content.ClipData.newRawUri(name,uri));intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION);startActivity(android.content.Intent.createChooser(intent,share?"Partilhar relatório":"Guardar ou abrir relatório"));}catch(Exception e){android.widget.Toast.makeText(MainActivity.this,"Não foi possível exportar o relatório",android.widget.Toast.LENGTH_LONG).show();}});}
@@ -68,8 +69,9 @@ public class MainActivity extends Activity {
   if(!BuildConfig.QP_BETA||testChecking||downloading)return;
   if(manual)testPrompted=false;
   testChecking=true;testLastCheck=android.os.SystemClock.elapsedRealtime();
+  final long attempt=System.currentTimeMillis();saveTestUpdateMetadata(attempt,"checking",null);
   new Thread(()->{
-   TestUpdate best=null;String failure=null;
+   TestUpdate best=null;String failure=null;JSONArray history=new JSONArray();
    try{
     for(int page=1;page<=10;page++){
      HttpURLConnection c=(HttpURLConnection)new URL(TEST_RELEASES+page).openConnection();
@@ -87,14 +89,15 @@ public class MainActivity extends Activity {
       java.util.regex.Matcher t=java.util.regex.Pattern.compile("android-test-b([0-9]+)-([0-9a-f]{7})").matcher(tag);
       if(!t.matches())continue;
       int build;try{build=Integer.parseInt(t.group(1));}catch(NumberFormatException e){continue;}
-      if(build<=BuildConfig.VERSION_CODE||(best!=null&&build<=best.build))continue;
+      if(build<=0)continue;
       JSONArray assets=release.optJSONArray("assets");if(assets==null)continue;
       for(int k=0;k<assets.length();k++){
        JSONObject a=assets.getJSONObject(k);String name=a.optString("name");
        java.util.regex.Matcher m=java.util.regex.Pattern.compile("Agenda-QPetiscos-TEST-v([0-9]+\\.[0-9]+\\.[0-9]+)-b"+build+"-"+t.group(2)+"\\.apk").matcher(name);
        String url=a.optString("browser_download_url");
        if(!m.matches()||!a.optString("state").equals("uploaded")||a.optLong("size")<=0||!url.equals("https://github.com/joaopereira1995/agenda-qpetiscos/releases/download/"+tag+"/"+name))continue;
-       best=new TestUpdate(build,m.group(1),release.optString("body",""),url);break;
+       JSONObject entry=new JSONObject();entry.put("build",build);entry.put("version",m.group(1));entry.put("notes",release.optString("body",""));entry.put("published",release.optString("published_at",""));history.put(entry);
+       if(build>BuildConfig.VERSION_CODE&&(best==null||build>best.build))best=new TestUpdate(build,m.group(1),release.optString("body",""),url);break;
       }
      }
      if(releases.length()<100)break;
@@ -102,12 +105,18 @@ public class MainActivity extends Activity {
    }catch(Exception e){failure=e.toString();android.util.Log.w("QPetiscos","Verificação TEST",e);}
    final TestUpdate found=best;final String error=failure;
    runOnUiThread(()->{
-    testChecking=false;if(isFinishing()||isDestroyed())return;
+    testChecking=false;saveTestUpdateMetadata(attempt,error==null?(found==null?"current":"available"):"error",error==null?history:null);if(isFinishing()||isDestroyed())return;
     if(error==null){testPending=found;if(manual&&found==null)Toast.makeText(this,"Aplicação TEST atualizada",Toast.LENGTH_SHORT).show();}
     else if(manual)Toast.makeText(this,"Não foi possível verificar atualizações TEST",Toast.LENGTH_LONG).show();
     tryShowTestUpdate();
    });
   }).start();
+ }
+ private void saveTestUpdateMetadata(long last,String status,JSONArray history){
+  if(!BuildConfig.QP_BETA)return;
+  try{android.content.SharedPreferences prefs=getSharedPreferences("qp_test_updates",0);JSONObject data=new JSONObject(prefs.getString("metadata","{}"));data.put("last",last);data.put("status",status);if(history!=null)data.put("history",history);prefs.edit().putString("metadata",data.toString()).apply();
+   if(web!=null&&!isFinishing()&&!isDestroyed())web.evaluateJavascript("if(window.qpTestUpdatesRefresh)window.qpTestUpdatesRefresh()",null);
+  }catch(Exception e){android.util.Log.w("QPetiscos","Metadados TEST",e);}
  }
  private void tryShowTestUpdate(){
   if(!BuildConfig.QP_BETA||!testForeground||testPrompted||testShowing||testPending==null||downloading||web==null||isFinishing()||isDestroyed()||!hasWindowFocus()||(updateDialog!=null&&updateDialog.isShowing()))return;
