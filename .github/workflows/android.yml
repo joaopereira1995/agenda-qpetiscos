@@ -2,6 +2,12 @@ name: Compilar Android
 
 on:
   workflow_dispatch:
+  push:
+    branches: [develop]
+
+concurrency:
+  group: qpetiscos-android-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_name == 'develop' }}
 
 permissions:
   contents: read
