@@ -60,6 +60,15 @@ jobs:
             if [ -d "production/$dir" ]; then cp -R "production/$dir" "site/$dir"; fi
             if [ -d "development/$dir" ]; then cp -R "development/$dir" "site/beta/$dir"; fi
           done
+          for pair in "production:site" "development:site/beta"; do
+            source_dir=${pair%%:*}
+            target_dir=${pair#*:}
+            if [ -f "$target_dir/core/build-info.js" ]; then
+              sha=$(git -C "$source_dir" rev-parse --short=7 HEAD)
+              date=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+              printf 'window.qpBuildInfo={"sha":"%s","date":"%s"};\n' "$sha" "$date" > "$target_dir/core/build-info.js"
+            fi
+          done
           touch site/.nojekyll
           test -s site/index.html
           test -s site/beta/index.html
