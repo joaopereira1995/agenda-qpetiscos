@@ -1,5 +1,5 @@
-// Operational service dashboard. TEST wide web only; existing events remain authoritative.
-function svcAvailable(){return qpBeta&&!window.QPetiscosNative&&matchMedia('(min-width:768px)').matches;}
+// Operational service dashboard. Wide web only; existing events remain authoritative.
+function svcAvailable(){return !window.QPetiscosNative&&matchMedia('(min-width:768px)').matches;}
 let svcPeriod=null,svcAutoPeriod=null,svcDay='',svcExpanded={reserva:false,takeaway:false};
 const svcStates={reserva:['pending','arrived','completed'],takeaway:['pending','preparing','ready','completed']};
 const svcLabels={pending:'Pendente',arrived:'Chegou',preparing:'Em preparação',ready:'Pronto',completed:'Concluído'};
