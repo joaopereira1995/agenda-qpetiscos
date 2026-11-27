@@ -22,6 +22,21 @@ $('moreService').remove();
 $('svcHeaderRefresh').onclick=()=>{if(svcAvailable()&&device)refresh();};
 $('servicePanel').onclick=async ev=>{const b=ev.target.closest('button');if(!b||!svcAvailable())return;if(b.dataset.svcPeriod){svcPeriod=b.dataset.svcPeriod;renderService();return;}if(b.dataset.svcExpand){const k=b.dataset.svcExpand;svcExpanded[k]=!svcExpanded[k];renderService();return;}if(b.dataset.svcDetail){showDetails(events.find(e=>e.id===b.dataset.svcDetail));return;}if(!b.dataset.svcId||busy||!device||qpReadOnly()||$('syncBanner').dataset.state!=='ok')return;const e=events.find(x=>x.id===b.dataset.svcId),target=b.dataset.svcState;if(!e||e.date!==localDay())return;const old=svcState(e),steps=svcStates[e.kind],i=steps.indexOf(old);if(!svcTransitionAllowed(e,target))return;await mutate(async()=>{check(await db.from('events').update({service_status:target,updated_by:device.id}).eq('id',e.id).eq('service_status',old).eq('completed',!!e.done).is('deleted_at',null).select('id').single());});renderService();};
 const svcBack=window.qpBack;window.qpBack=()=>{if(svcBack())return true;if(tab==='service'){goHome();return true;}return false;};
+
+// Local operational alert; one display per event per browser/device, persisted across reloads.
+function svcAlertEligible(e,day,seconds){const parts=String(e.time).split(':').map(Number),remaining=parts[0]*3600+parts[1]*60-seconds;return e.kind==='takeaway'&&e.date===day&&!e.done&&['pending','preparing'].includes(svcState(e))&&remaining>0&&remaining<=300;}
+const svcAlertSeen=new Set();let svcAlertHost=null,svcAlertDay='';
+function svcAlerts(day,seconds){
+ if(!svcAlertHost){svcAlertHost=document.createElement('aside');svcAlertHost.id='svcAlerts';svcAlertHost.setAttribute('aria-live','polite');document.body.append(svcAlertHost);}
+ if(!svcAvailable()||tab!=='service'||searching||document.hidden||!device||$('syncBanner').dataset.state!=='ok'){svcAlertHost.hidden=true;return;}
+ if(svcAlertDay!==day){svcAlertDay=day;svcAlertSeen.clear();svcAlertHost.replaceChildren();try{for(const id of JSON.parse(qpStorage.getItem('svc-alerts:'+device.id+':'+day)||'[]'))svcAlertSeen.add(id);}catch{}}
+ svcAlertHost.hidden=false;
+ const eligible=events.filter(e=>svcAlertEligible(e,day,seconds));
+ for(const card of [...svcAlertHost.children])if(!eligible.some(e=>e.id===card.dataset.eventId))card.remove();
+ for(const e of eligible){if(svcAlertSeen.has(e.id))continue;svcAlertSeen.add(e.id);try{qpStorage.setItem('svc-alerts:'+device.id+':'+day,JSON.stringify([...svcAlertSeen]));}catch{}
+ const card=document.createElement('article');card.dataset.eventId=e.id;card.innerHTML='<div class="svcAlertHead">'+qi('clock')+'<strong>Takeaway a sair</strong><button type="button" aria-label="Fechar aviso">'+qi('close')+'</button></div><b>'+esc(e.time)+' · '+esc(e.name)+'</b><small>Entrega dentro de 5 minutos</small>';card.querySelector('button').onclick=()=>card.remove();svcAlertHost.append(card);}
+}
+
 const svcClockFormat=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Lisbon',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'});
-function svcTick(){if(!svcAvailable()||tab!=='service'||searching||document.hidden)return;const now=svcClockFormat.formatToParts(new Date()),part=k=>now.find(x=>x.type===k).value;$('svcClockHM').textContent=part('hour')+':'+part('minute');$('svcClockSeconds').textContent=':'+part('second');if(svcDay!==localDay()||svcAutoPeriod!==(svcNow()<900?'lunch':'dinner'))renderService();}
+function svcTick(){if(!svcAvailable()||tab!=='service'||searching||document.hidden){if(svcAlertHost)svcAlertHost.hidden=true;return;}const now=svcClockFormat.formatToParts(new Date()),part=k=>now.find(x=>x.type===k).value;$('svcClockHM').textContent=part('hour')+':'+part('minute');$('svcClockSeconds').textContent=':'+part('second');if(svcDay!==localDay()||svcAutoPeriod!==(svcNow()<900?'lunch':'dinner'))renderService();svcAlerts(localDay(),Number(part('hour'))*3600+Number(part('minute'))*60+Number(part('second')));}
 setInterval(svcTick,1000);document.addEventListener('visibilitychange',svcTick);
