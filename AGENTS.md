@@ -1,6 +1,7 @@
 # Agenda QPetiscos — Development guidelines
 
 ## Workflow and release safety
+- Use one atomic commit per approved delivery, including all related HTML, CSS, JS, Android, workflow and documentation changes. Prepare and validate the complete change set before updating develop once. Use Git tree + commit + ref update for multi-file changes; never use sequential per-file commits for a single delivery. Do not publish intermediate incomplete states. If atomic delivery is unavailable, report the blocker instead of falling back to per-file commits. Never rewrite existing branch history.
 - When the owner instructs “EFETUAR COMMIT” (case-insensitive), execute the approved work and commit it to develop in the same turn. Do not respond with plans, promises or repeated approval requests instead of execution. Report the actual commit SHA, changed files, validation and any concrete blocker. Never commit to main or bypass mandatory safety checks.
 - Work on develop. Never write to, commit, push, merge, deploy or release to main. Main is exclusively controlled by the owner, even after approval of a stable version.
 - Read current repository files before changing them; preserve unrelated code and user changes. Prefer small, coherent commits with descriptive messages.
