@@ -48,5 +48,7 @@
   "service": "concierge-bell",
   "userCheck": "user-round-check",
   "chef": "chef-hat",
-  "packageCheck": "package-check"
+  "packageCheck": "package-check",
+  "activity": "activity",
+  "fileText": "file-text"
 }
