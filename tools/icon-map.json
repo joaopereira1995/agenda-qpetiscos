@@ -44,5 +44,9 @@
   "settings": "settings",
   "prev": "chevron-left",
   "warning": "triangle-alert",
-  "close": "x"
+  "close": "x",
+  "service": "concierge-bell",
+  "userCheck": "user-round-check",
+  "chef": "chef-hat",
+  "packageCheck": "package-check"
 }
