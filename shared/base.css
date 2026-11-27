@@ -142,3 +142,5 @@ html:not(.qpDesktop) #agendaControls nav button,html:not(.qpDesktop) #calendarCo
 html:not(.qpDesktop) #week button.active,html:not(.qpDesktop) #monthGrid button.active{background:var(--accent)!important;color:var(--accenttext)!important}
 html:not(.qpDesktop) #week button.active small{color:var(--accenttext)}
 html:not(.qpDesktop) #week button.active.current,html:not(.qpDesktop) #monthGrid button.active.current{outline-color:var(--accenttext)}
+
+.qpInfoCard{background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:12px;margin:10px 0}.qpInfoCard dl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin:12px 0 0}.qpInfoCard dt,.qpInfoCard dd{margin:0;padding:4px 0;overflow-wrap:anywhere}.qpInfoCard dd{text-align:right;font-weight:600}.deskSettingGroup #qpAppInfo{margin-top:0}.deskSettingGroup:has(#qpAppInfo)>h3{display:none}
