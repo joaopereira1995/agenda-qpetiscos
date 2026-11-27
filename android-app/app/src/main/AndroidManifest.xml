@@ -3,7 +3,7 @@
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
 <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-<application android:label="Agenda QPetiscos" android:icon="@mipmap/ic_launcher" android:theme="@style/AppTheme" android:allowBackup="false" android:usesCleartextTraffic="false">
+<application android:label="${qpLabel}" android:icon="${qpIcon}" android:theme="@style/AppTheme" android:allowBackup="false" android:usesCleartextTraffic="false">
 <activity android:name=".MainActivity" android:launchMode="singleTop" android:windowSoftInputMode="adjustResize" android:exported="true"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity>
 <service android:name=".AgendaMessagingService" android:exported="false"><intent-filter><action android:name="com.google.firebase.MESSAGING_EVENT"/></intent-filter></service>
 <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="qpetiscos_notifications"/>
@@ -11,10 +11,10 @@
 <provider android:name=".ReportProvider" android:authorities="${applicationId}.reports" android:exported="false" android:grantUriPermissions="true"/>
 <provider android:name=".UpdateProvider" android:authorities="${applicationId}.updates" android:exported="false" android:grantUriPermissions="true"/>
 
-<receiver android:name=".NotesWidget" android:label="QPetiscos notas" android:exported="false"><intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter><meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_notes"/></receiver>
+<receiver android:name=".NotesWidget" android:label="QPetiscos notas${qpWidgetSuffix}" android:exported="false"><intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter><meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_notes"/></receiver>
 <service android:name=".NotesWidgetRows" android:permission="android.permission.BIND_REMOTEVIEWS" android:exported="false"/>
 <receiver android:name=".NotesWidgetClick" android:exported="false"/>
-<receiver android:name=".FullWidget" android:label="QPetiscos agenda" android:exported="false"><intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter><meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_full"/></receiver>
-<receiver android:name=".TakeawayWidget" android:label="QPetiscos takeaway" android:exported="false"><intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter><meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_takeaway"/></receiver>
+<receiver android:name=".FullWidget" android:label="QPetiscos agenda${qpWidgetSuffix}" android:exported="false"><intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter><meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_full"/></receiver>
+<receiver android:name=".TakeawayWidget" android:label="QPetiscos takeaway${qpWidgetSuffix}" android:exported="false"><intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE"/></intent-filter><meta-data android:name="android.appwidget.provider" android:resource="@xml/widget_takeaway"/></receiver>
 <activity android:name=".WidgetCalendar" android:exported="false"/><activity android:name=".WidgetSettings" android:exported="true"/><service android:name=".WidgetJob" android:permission="android.permission.BIND_JOB_SERVICE" android:exported="false"/>
 <receiver android:name=".WidgetClick" android:exported="false"/><service android:name=".WidgetRows" android:permission="android.permission.BIND_REMOTEVIEWS" android:exported="false"/></application></manifest>

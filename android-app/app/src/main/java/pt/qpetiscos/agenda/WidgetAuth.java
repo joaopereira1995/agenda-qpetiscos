@@ -15,7 +15,7 @@ import javax.crypto.spec.GCMParameterSpec;
 /** Independent widget session: never rotates the WebView refresh token. */
 final class WidgetAuth {
     private static final String ALIAS="qp_widget_auth_v1";
-    private static final String AUTH="https://kyzwmaydwokbfmiskhcg.supabase.co/auth/v1/token?grant_type=";
+    private static final String AUTH=BuildConfig.QP_SUPABASE_URL+"/auth/v1/token?grant_type=";
     static final class HttpError extends IOException {
         final int code; final boolean auth;
         HttpError(int code){this(code,false);}

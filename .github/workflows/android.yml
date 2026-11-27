@@ -49,11 +49,19 @@ jobs:
 
       - name: Restaurar configuracao Firebase
         env:
-          FIREBASE_CONFIG: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+          FIREBASE_CONFIG: ${{ github.ref_name == 'main' && secrets.GOOGLE_SERVICES_JSON_BASE64 || secrets.GOOGLE_SERVICES_JSON_TEST_BASE64 }}
         run: |
           test -n "$FIREBASE_CONFIG" || { echo "Missing GOOGLE_SERVICES_JSON_BASE64"; exit 1; }
           printf '%s' "$FIREBASE_CONFIG" | base64 --decode > android-app/app/google-services.json
-          python -m json.tool android-app/app/google-services.json > /dev/null
+          python - <<'PYVERIFY'
+          import json, os
+          with open('android-app/app/google-services.json') as f:
+              cfg=json.load(f)
+          test=os.environ['GITHUB_REF_NAME'] != 'main'
+          package='pt.qpetiscos.agenda.test' if test else 'pt.qpetiscos.agenda'
+          assert any(c['client_info']['android_client_info']['package_name']==package for c in cfg['client']), 'Firebase package mismatch'
+          assert (cfg['project_info']['project_id']=='agenda-qpetiscos-test') == test, 'Firebase environment mismatch'
+          PYVERIFY
 
       - name: Compilar APK Release
         working-directory: android-app

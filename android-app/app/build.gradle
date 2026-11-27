@@ -14,11 +14,14 @@ android {
     compileSdk 35
 
     defaultConfig {
-        applicationId 'pt.qpetiscos.agenda'
+        applicationId (qpBeta.get() ? 'pt.qpetiscos.agenda.test' : 'pt.qpetiscos.agenda')
+        manifestPlaceholders = [qpLabel: qpBeta.get() ? 'Agenda QPetiscos TEST' : 'Agenda QPetiscos', qpIcon: qpBeta.get() ? '@mipmap/ic_launcher_test' : '@mipmap/ic_launcher', qpWidgetSuffix: qpBeta.get() ? ' TEST' : '']
+        buildConfigField 'String', 'QP_SUPABASE_URL', '"' + (qpBeta.get() ? 'https://ooctwbyhlpifmldcbvzi.supabase.co' : 'https://kyzwmaydwokbfmiskhcg.supabase.co') + '"'
+        buildConfigField 'String', 'QP_SUPABASE_KEY', '"' + (qpBeta.get() ? 'sb_publishable_CAB6yO8JQjeP4tS52-2OiQ_uBYnmkGK' : 'sb_publishable_Ko1iv1CWVi693R9_-xwNvg_5auNwzAy') + '"'
         minSdk 26
         targetSdk 35
-        versionCode = qpBeta.get() ? 917 : 918
-        versionName = qpBeta.get() ? '0.9.0-beta.2.5' : '0.8.0'
+        versionCode = qpBeta.get() ? 919 : 918
+        versionName = qpBeta.get() ? '0.9.0-beta.2.6' : '0.8.0'
         buildConfigField 'boolean', 'QP_BETA', qpBeta.get().toString()
     }
 

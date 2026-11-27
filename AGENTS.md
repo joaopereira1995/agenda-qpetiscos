@@ -7,7 +7,7 @@
 - Beta Web and Android must be validated by the owner before stable release. Maintain existing GitHub Pages root (stable) and /beta/ (develop) separation.
 - Update version metadata consistently for feature releases, including Android versionCode/versionName and visible version/changelog where applicable. Documentation-only commits need no version bump.
 - No secrets, tokens, service-account keys, signing material or personal restaurant data in commits or logs. Use existing secrets and configuration.
-- Do not create, edit or delete real reservations, takeaways, notes or tasks for testing. Beta shares production Supabase; respect read-only mode and explicit owner approval for production changes. Use mocks or isolated test data/environments.
+- Do not create, edit or delete real reservations, takeaways, notes or tasks for testing. Beta uses isolated TEST Supabase and Firebase; never connect TEST clients to production. Use mocks or isolated test data/environments.
 - Database migrations must be additive/backward-compatible where possible, reviewed separately, and supplied with validation and rollback guidance. Never execute production SQL or modify Edge Functions without explicit authorization. Preserve existing stable clients and notification behavior.
 
 ## Architecture
