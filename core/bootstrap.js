@@ -1,6 +1,6 @@
 // Load desktop presentation only in a browser. Android always uses baseline mobile.
 (async()=>{
- if(qpBeta)qpInitApplicationCards();
+ qpInitApplicationCards();
  if(!window.QPetiscosNative){
    const desktopViewport=matchMedia('(min-width:768px)');let pending=null;
    const ensureDesktop=()=>{
