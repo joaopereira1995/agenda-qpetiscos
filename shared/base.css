@@ -238,3 +238,22 @@ html.qp-app-settings #settingsPanel #qpVersionFields,html.qp-app-settings #setti
 html.qp-app-settings #settingsPanel #qpVersionFields dt,html.qp-app-settings #settingsPanel #qpSystemFields dt{padding-right:8px}
 
 html.qp-app-settings:not(.qp-test) #qpVersionFields{display:none}html.qp-app-settings:not(.qp-test) #settingsPanel #qpVersionHero{border-bottom:0;margin:0;padding:16px 0 4px}
+
+/* UI-010/011/012: notification date and time hierarchy. Preserve summary cards. */
+#notificationList .eventNotice .qpNoticeSchedule{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--bg);border-radius:10px;padding:10px 12px;min-width:0}
+#notificationList .qpNoticeDate{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+#notificationList .qpNoticeDate small{color:var(--accent);font-weight:600}
+#notificationList .qpNoticeDate b{font-size:1.04em;overflow-wrap:anywhere}
+#notificationList .qpNoticeTime{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex:none}
+#notificationList .qpNoticeTime b{font-size:1.8em;line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+#notificationList .qpNoticeTime small,#notificationList .qpNoticeMeta{display:flex;align-items:center;gap:6px}
+#notificationList .qpNoticeTime svg,#notificationList .qpNoticeMeta svg{width:15px;height:15px;color:var(--accent);flex:none}
+#notificationList .qpNoticeMeta{font-size:.86em;overflow-wrap:anywhere}
+#notificationList .qpNoticeImportant{color:var(--fg);font-weight:600}
+#notificationList .qpNoticeImportant svg{color:#C76C58}
+#notificationList .eventNotice[data-action=deleted] .noticeCardHead strong,#notificationList .eventNotice[data-action=deleted] .noticeIcon,#notificationList .eventNotice[data-action=note_important] .noticeIcon{color:#C76C58}
+#notificationList .eventNotice[data-action=completed] .noticeCardHead strong,#notificationList .eventNotice[data-action=task_completed] .noticeCardHead strong,#notificationList .eventNotice[data-action=completed] .noticeIcon,#notificationList .eventNotice[data-action=task_completed] .noticeIcon{color:var(--fg)}
+#notificationList .eventNotice .noticeNoteBox[hidden]{display:none}
+#notificationList .eventNotice .noticeNoteText>small{display:block;margin-bottom:4px}
+#notificationList .qpNoticeToggle{align-self:flex-end}
+@media(max-width:360px){#notificationList .eventNotice .qpNoticeSchedule{padding:8px;gap:8px}#notificationList .qpNoticeTime b{font-size:1.55em}}
