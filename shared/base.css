@@ -224,3 +224,15 @@ html.qp-test .qpHistoryEntry[open] summary>svg{transform:rotate(180deg)}
 html.qp-test .qpHistoryEntry[open] .qpReleaseTopics{border-top:1px solid var(--line);padding-top:10px}
 html.qp-test .qpInstalled{font-size:.8em;color:var(--accent);font-weight:700}
 html.qp-test .qpHistoryDate{margin-top:8px;color:var(--sub)}
+
+/* UI-005 to UI-007: collapsed TEST cards with compact status summaries. */
+html.qp-test #settingsPanel .qpCollapsible>.qpInfoHeading{align-items:center;gap:10px;cursor:pointer}
+html.qp-test #settingsPanel .qpCollapsible>.qpInfoHeading>.qpSummaryLabel{display:flex;flex-direction:column;flex:1;min-width:0;gap:4px}
+html.qp-test #settingsPanel .qpCollapsible .qpSummaryLabel strong{font-weight:700;overflow-wrap:anywhere}
+html.qp-test #settingsPanel .qpCollapsible .qpSummaryLabel small{font-size:.82em;font-weight:400;color:var(--sub);overflow-wrap:anywhere}
+html.qp-test #settingsPanel .qpCollapsible[open]>.qpInfoHeading .qpSummaryLabel small{display:none}
+html.qp-test #settingsPanel .qpCollapsible:not([open])>:not(summary){display:none!important}
+html.qp-test #settingsPanel .qpCollapsible[open]>.qpInfoHeading{margin-bottom:12px}
+html.qp-test #settingsPanel .qpCollapsible>.qpInfoHeading:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:6px}
+html.qp-test #settingsPanel #qpVersionFields,html.qp-test #settingsPanel #qpSystemFields{column-gap:0}
+html.qp-test #settingsPanel #qpVersionFields dt,html.qp-test #settingsPanel #qpSystemFields dt{padding-right:8px}

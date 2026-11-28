@@ -112,7 +112,8 @@ function qpFillFields(id,fields){const el=$(id);el.replaceChildren();for(const [
 const qpHistoryBaseline=[{"version":"0.10.3","build":929,"notes":"FIX-001: Rascunhos de reservas e takeaways guardados neste dispositivo e recuperados após interrupções.\nFIX-002: Serviço mantém duas colunas, com cartões adaptáveis e scroll independente sem cortes de informação."}];
 let qpHistorySignature='',qpWebUpdateBusy=false,qpWebUpdateState={last:0,status:'idle',history:[]};
 function qpReleaseTopics(notes){return String(notes||'').split(/\r?\n/).map(x=>x.replace(/^\s*[•*-]\s*/,'').trim()).filter(Boolean);}
-function qpTopicList(lines){const ul=document.createElement('ul');ul.className='qpReleaseTopics';for(const line of lines){const li=document.createElement('li');li.innerHTML=qpIcon('success');const s=document.createElement('span');s.textContent=line;li.append(s);ul.append(li)}return ul;}
+function qpPublicTopic(line){return String(line).replace(/^\s*(?:(?:UI|FEAT|FIX|QA)-\d+(?:\s+(?:a|e)\s+(?:UI|FEAT|FIX|QA)-\d+)*\s*:\s*)/i,'').trim();}
+function qpTopicList(lines){const ul=document.createElement('ul');ul.className='qpReleaseTopics';for(const line of lines){const li=document.createElement('li');li.innerHTML=qpIcon('success');const s=document.createElement('span');s.textContent=qpPublicTopic(line);li.append(s);ul.append(li)}return ul;}
 function qpRenderTestUpdates(){
  if(!qpBeta)return;
  let state=qpWebUpdateState;try{if(window.QPetiscosNative?.testUpdateMetadata)state=JSON.parse(window.QPetiscosNative.testUpdateMetadata());}catch{}
@@ -120,19 +121,36 @@ function qpRenderTestUpdates(){
  $('qpLastUpdateCheck').textContent=state.last?new Date(state.last).toLocaleString('pt-PT',{timeZone:'Europe/Lisbon'}):'Ainda não realizada';
  const labels={idle:'A aguardar verificação',checking:'A procurar atualizações…',current:window.QPetiscosNative?'Aplicação atualizada':'Histórico atualizado',available:'Nova atualização disponível',error:'Não foi possível verificar atualizações'};
  const status=$('qpUpdateState');status.className=state.status==='current'?'qpInfoGood':state.status==='error'?'qpInfoBad':'qpInfoPending';status.innerHTML=qpIcon(state.status==='current'?'success':state.status==='error'?'warning':'clock');status.append(document.createTextNode(labels[state.status]||labels.idle));
- $('updateCheck').disabled=state.status==='checking';
+ $('updateCheck').disabled=state.status==='checking';if($('qpSummaryUpdate'))$('qpSummaryUpdate').textContent=labels[state.status]||labels.idle;
  const map=new Map();for(const x of [...qpHistoryBaseline,...(Array.isArray(state.history)?state.history:[])])if(Number.isInteger(x.build)&&typeof x.version==='string'&&typeof x.notes==='string')map.set(x.build,x);
  if(current)map.set(current,{...map.get(current),version,build:current,notes:window.qpRelease.changes.join('\n')});
  const entries=[...map.values()].sort((a,b)=>b.build-a.build),sig=JSON.stringify([current,entries]);
- if(sig!==qpHistorySignature){qpHistorySignature=sig;const host=$('qpHistoryList'),open=new Set([...host.querySelectorAll('details[open]')].map(e=>e.dataset.build));host.replaceChildren();for(const x of entries){const d=document.createElement('details');d.className='qpHistoryEntry';d.dataset.build=x.build;d.open=open.has(String(x.build))||(!open.size&&x.build===current);const summary=document.createElement('summary');summary.innerHTML='<span class="qpHistoryVersion"><strong>v'+esc(x.version)+'</strong><small>Build '+x.build+'</small></span>'+(x.build===current?'<span class="qpInstalled">Instalada</span>':'')+qpIcon('chevronDown');d.append(summary);if(x.published&&!isNaN(Date.parse(x.published))){const p=document.createElement('small');p.className='qpHistoryDate';p.textContent='Publicação: '+new Date(x.published).toLocaleString('pt-PT',{timeZone:'Europe/Lisbon'});d.append(p)}d.append(qpTopicList(qpReleaseTopics(x.notes)));host.append(d);}}
+ if(sig!==qpHistorySignature){qpHistorySignature=sig;const host=$('qpHistoryList'),open=new Set([...host.querySelectorAll('details[open]')].map(e=>e.dataset.build));host.replaceChildren();for(const x of entries){const d=document.createElement('details');d.className='qpHistoryEntry';d.dataset.build=x.build;d.open=open.has(String(x.build));const summary=document.createElement('summary');summary.innerHTML='<span class="qpHistoryVersion"><strong>v'+esc(x.version)+'</strong><small>Build '+x.build+'</small></span>'+(x.build===current?'<span class="qpInstalled">Instalada</span>':'')+qpIcon('chevronDown');d.append(summary);if(x.published&&!isNaN(Date.parse(x.published))){const p=document.createElement('small');p.className='qpHistoryDate';p.textContent='Publicação: '+new Date(x.published).toLocaleString('pt-PT',{timeZone:'Europe/Lisbon'});d.append(p)}d.append(qpTopicList(qpReleaseTopics(x.notes)));host.append(d);}}
 }
 async function qpFetchWebHistory(manual=false){
  if(!qpWebBeta||qpWebUpdateBusy)return;qpWebUpdateBusy=true;qpWebUpdateState={...qpWebUpdateState,last:Date.now(),status:'checking'};qpRenderTestUpdates();
  try{const history=[];for(let page=1;page<=10;page++){const res=await fetch('https://api.github.com/repos/joaopereira1995/agenda-qpetiscos/releases?per_page=100&page='+page,{cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);const rows=await res.json();for(const x of rows){const t=/^android-test-b(\d+)-([0-9a-f]{7})$/.exec(x.tag_name);if(!t||x.draft||!x.prerelease)continue;const a=x.assets?.find(a=>a.state==='uploaded'&&a.size>0&&new RegExp('^Agenda-QPetiscos-TEST-v[0-9]+\\.[0-9]+\\.[0-9]+-b'+t[1]+'-'+t[2]+'\\.apk$').test(a.name));if(a)history.push({build:Number(t[1]),version:a.name.split('-v')[1].split('-b')[0],notes:x.body||'',published:x.published_at});}if(rows.length<100)break;}qpWebUpdateState={...qpWebUpdateState,status:'current',history};}catch(e){qpWebUpdateState={...qpWebUpdateState,status:'error'};}finally{qpWebUpdateBusy=false;try{qpStorage.setItem('qp-test-update-history',JSON.stringify(qpWebUpdateState))}catch{}qpRenderTestUpdates();}}
+function qpInitApplicationCards(){
+ if(!qpBeta||$('qpSummaryVersion'))return;
+ const configs=[['qpAppInfo','qpSummaryVersion'],['qpSystemInfo','qpSummarySystem'],['qpTestUpdates','qpSummaryUpdate'],['qpPublicChanges','qpSummaryChanges'],['qpTestHistory','qpSummaryHistory']];
+ for(const [id,summaryId] of configs){
+  let card=$(id);if(id==='qpPublicChanges')card=card.closest('details');
+  if(card.tagName!=='DETAILS'){const d=document.createElement('details');d.id=card.id;d.className=card.className;d.hidden=card.hidden;while(card.firstChild)d.append(card.firstChild);card.replaceWith(d);card=d;}
+  let heading=card.querySelector('.qpInfoHeading');
+  if(heading.tagName!=='SUMMARY'){const s=document.createElement('summary');s.className=heading.className;while(heading.firstChild)s.append(heading.firstChild);heading.replaceWith(s);heading=s;}
+  const title=heading.textContent.trim(),glyph=heading.querySelector('svg');
+  const label=document.createElement('span');label.className='qpSummaryLabel';
+  const strong=document.createElement('strong');strong.textContent=title;
+  const small=document.createElement('small');small.id=summaryId;
+  label.append(strong,small);heading.replaceChildren();if(glyph)heading.append(glyph);heading.append(label);heading.insertAdjacentHTML('beforeend',qpIcon('chevronDown'));
+  card.classList.add('qpCollapsible');card.open=false;
+ }
+ $('qpSummaryChanges').textContent='Consultar melhorias';$('qpSummaryHistory').textContent='Consultar versões anteriores';
+}
 function qpRefreshInfo(){
  const fields=qpDiagnosticFields(),system=qpSystemFields();
  if(!qpBeta){qpFillFields('qpVersionFields',fields);qpFillFields('qpSystemFields',system);$('qpPublicChanges').textContent=window.qpRelease.changes.join(' ');return;}
- const data=Object.fromEntries(fields),hero=$('qpVersionHero');hero.hidden=false;hero.innerHTML='<strong>v'+esc(data['Versão'])+'</strong><small>'+esc((data.Build?'Build '+data.Build+' · ':'')+data.Plataforma)+'</small><span class="qpTestPill">AMBIENTE TEST</span>';
+ qpInitApplicationCards();const data=Object.fromEntries(fields),hero=$('qpVersionHero');$('qpSummaryVersion').textContent='v'+data['Versão']+(data.Build?' · Build '+data.Build:'');$('qpSummarySystem').textContent=Object.fromEntries(system)['Sincronização'];hero.hidden=false;hero.innerHTML='<strong>v'+esc(data['Versão'])+'</strong><small>'+esc((data.Build?'Build '+data.Build+' · ':'')+data.Plataforma)+'</small><span class="qpTestPill">AMBIENTE TEST</span>';
  qpFillFields('qpVersionFields',fields.filter(([k])=>!['Versão','Build','Plataforma','Ambiente'].includes(k)).map(([k,v])=>[k==='Android'?'Sistema operativo':k,k==='Android'?'Android '+v:v]));
  qpFillFields('qpSystemFields',system);
  const caption=$('qpReleaseCaption');caption.hidden=false;caption.textContent='Versão '+data['Versão']+(data.Build?' · Build '+data.Build:'');
