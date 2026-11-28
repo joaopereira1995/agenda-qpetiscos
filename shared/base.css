@@ -257,3 +257,19 @@ html.qp-app-settings:not(.qp-test) #qpVersionFields{display:none}html.qp-app-set
 #notificationList .eventNotice .noticeNoteText>small{display:block;margin-bottom:4px}
 #notificationList .qpNoticeToggle{align-self:flex-end}
 @media(max-width:360px){#notificationList .eventNotice .qpNoticeSchedule{padding:8px;gap:8px}#notificationList .qpNoticeTime b{font-size:1.55em}}
+
+/* UI-013: daily summary in the notification centre, matching approved native hierarchy. */
+#notificationList .summaryNotice .qpSummaryNoticeDate{font-size:1.18em;font-weight:700;color:var(--fg);line-height:1.25;overflow-wrap:anywhere}
+#notificationList .summaryNotice .qpSummaryNoticeTotals{display:flex;gap:8px;min-width:0}
+#notificationList .summaryNotice .qpSummaryNoticeTile{flex:1;min-width:0;background:var(--bg);border-radius:9px;padding:10px 12px;display:grid;gap:4px;color:var(--fg)}
+#notificationList .summaryNotice .qpSummaryNoticeTile>div{display:flex;align-items:center;gap:7px}
+#notificationList .summaryNotice .qpSummaryNoticeTile b{font-size:1.55em;line-height:1.15;font-variant-numeric:tabular-nums}
+#notificationList .summaryNotice .qpSummaryNoticeTile>span{font-size:.85em}
+#notificationList .summaryNotice .qpSummaryNoticeServices{background:var(--bg);border-radius:9px;padding:0 12px;color:var(--fg)}
+#notificationList .summaryNotice .qpSummaryNoticeRow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;min-width:0}
+#notificationList .summaryNotice .qpSummaryNoticeRow+.qpSummaryNoticeRow{border-top:1px solid var(--line)}
+#notificationList .summaryNotice .qpSummaryNoticeRow>span{display:flex;align-items:center;gap:7px;min-width:0}
+#notificationList .summaryNotice .qpSummaryNoticeRow>b{font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+#notificationList .summaryNotice .qpSummaryNoticeTile svg,#notificationList .summaryNotice .qpSummaryNoticeRow svg,#notificationList .summaryNotice .qpSummaryNoticeEmpty svg{width:18px;height:18px;flex:none;color:var(--accent)}
+#notificationList .summaryNotice .qpSummaryNoticeEmpty{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--bg);border-radius:9px;padding:12px;color:var(--fg)}
+@media(max-width:360px){#notificationList .summaryNotice .qpSummaryNoticeServices{padding:0 8px}#notificationList .summaryNotice .qpSummaryNoticeRow{gap:5px;font-size:.92em}}
